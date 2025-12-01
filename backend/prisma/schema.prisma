@@ -1,0 +1,184 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sku         String    @unique
+  name        String
+  description String?
+  category    String?
+  brand       String?
+  images      Json      @default("[]")
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  variants    Variant[]
+
+  @@index([sku])
+  @@index([category])
+  @@map("products")
+}
+
+model Variant {
+  id                 String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  productId          String      @map("product_id") @db.Uuid
+  sku                String      @unique
+  attributes         Json?
+  priceInr           Decimal     @map("price_inr") @db.Decimal(12, 2)
+  compareAtPriceInr  Decimal?    @map("compare_at_price_inr") @db.Decimal(12, 2)
+  costPriceInr       Decimal?    @map("cost_price_inr") @db.Decimal(12, 2)
+  weightGrams        Int?        @map("weight_grams")
+  isActive           Boolean     @default(true) @map("is_active")
+  createdAt          DateTime    @default(now()) @map("created_at")
+  updatedAt          DateTime    @updatedAt @map("updated_at")
+  product            Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventory          Inventory[]
+
+  @@index([sku])
+  @@index([productId])
+  @@map("variants")
+}
+
+model Inventory {
+  id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sku             String
+  location        String    @default("main_warehouse")
+  qtyAvailable    Int       @default(0) @map("qty_available")
+  qtyReserved     Int       @default(0) @map("qty_reserved")
+  safetyStock     Int       @default(10) @map("safety_stock")
+  reorderPoint    Int       @default(20) @map("reorder_point")
+  leadTimeDays    Int       @default(7) @map("lead_time_days")
+  lastRestockedAt DateTime? @map("last_restocked_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  variant         Variant   @relation(fields: [sku], references: [sku], onDelete: Cascade)
+
+  @@unique([sku, location])
+  @@index([sku])
+  @@map("inventory")
+}
+
+model Sales {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  orderId     String   @map("order_id")
+  sku         String
+  qty         Int
+  priceInr    Decimal  @map("price_inr") @db.Decimal(12, 2)
+  discountInr Decimal  @default(0) @map("discount_inr") @db.Decimal(12, 2)
+  soldAt      DateTime @map("sold_at")
+  customerId  String?  @map("customer_id") @db.Uuid
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([sku, soldAt])
+  @@index([orderId])
+  @@map("sales")
+}
+
+model Forecast {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sku              String
+  horizonDays      Int      @map("horizon_days")
+  generatedAt      DateTime @default(now()) @map("generated_at")
+  predictions      Json
+  accuracyMetrics  Json?    @map("accuracy_metrics")
+  aiExplanation    String?  @map("ai_explanation")
+  modelVersion     String   @default("gpt-4-turbo") @map("model_version")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([sku, horizonDays, generatedAt])
+  @@map("forecasts")
+}
+
+model Supplier {
+  id             String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name           String
+  contactPerson  String?          @map("contact_person")
+  email          String?
+  phone          String?
+  address        String?
+  paymentTerms   String?          @map("payment_terms")
+  leadTimeDays   Int              @default(14) @map("lead_time_days")
+  rating         Decimal?         @db.Decimal(3, 2)
+  notes          String?
+  isActive       Boolean          @default(true) @map("is_active")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  supplierPrices SupplierPrice[]
+  purchaseOrders PurchaseOrder[]
+
+  @@map("suppliers")
+}
+
+model SupplierPrice {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  supplierId   String    @map("supplier_id") @db.Uuid
+  sku          String
+  unitPriceInr Decimal   @map("unit_price_inr") @db.Decimal(12, 2)
+  moq          Int       @default(1)
+  validFrom    DateTime  @default(now()) @map("valid_from")
+  validUntil   DateTime? @map("valid_until")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  supplier     Supplier  @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  @@index([sku, supplierId])
+  @@map("supplier_prices")
+}
+
+model PurchaseOrder {
+  id                   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  poNumber             String    @unique @map("po_number")
+  supplierId           String?   @map("supplier_id") @db.Uuid
+  status               String    @default("draft")
+  lineItems            Json      @map("line_items")
+  totalAmountInr       Decimal   @map("total_amount_inr") @db.Decimal(12, 2)
+  expectedDeliveryDate DateTime? @map("expected_delivery_date") @db.Date
+  aiReasoning          String?   @map("ai_reasoning")
+  draftEmailSubject    String?   @map("draft_email_subject")
+  draftEmailBody       String?   @map("draft_email_body")
+  createdBy            String?   @map("created_by") @db.Uuid
+  approvedBy           String?   @map("approved_by") @db.Uuid
+  approvedAt           DateTime? @map("approved_at")
+  sentAt               DateTime? @map("sent_at")
+  receivedAt           DateTime? @map("received_at")
+  notes                String?
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  supplier             Supplier? @relation(fields: [supplierId], references: [id])
+
+  @@index([status])
+  @@index([supplierId])
+  @@map("purchase_orders")
+}
+
+model InventoryAuditLog {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sku        String
+  changeType String   @map("change_type")
+  qtyChange  Int      @map("qty_change")
+  qtyBefore  Int      @map("qty_before")
+  qtyAfter   Int      @map("qty_after")
+  referenceId String?  @map("reference_id")
+  reason     String?
+  changedBy  String?  @map("changed_by") @db.Uuid
+  changedAt  DateTime @default(now()) @map("changed_at")
+
+  @@index([sku, changedAt])
+  @@map("inventory_audit_log")
+}
+
+model AdminSettings {
+  userId                   String   @id @map("user_id") @db.Uuid
+  lowStockAlertEnabled     Boolean  @default(true) @map("low_stock_alert_enabled")
+  forecastEmailFrequency   String   @default("weekly") @map("forecast_email_frequency")
+  notificationChannels     Json     @default("[\"email\"]") @map("notification_channels")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_settings")
+}
