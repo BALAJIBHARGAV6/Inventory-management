@@ -19,45 +19,10 @@ export default function HomepageInteractive({ pageData }) {
     <div className="min-h-screen bg-background">
       <Header onSearchSubmit={handleSearch} />
       <main className="pt-16">
-        {/* Hero Section */}
-        <section className="py-4 md:py-8">
+        {/* Hero Section - Full Width */}
+        <section className="pt-2">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <HeroCarousel slides={pageData?.heroSlides} />
-          </div>
-        </section>
-
-        {/* Promo Banner */}
-        <section className="py-4">
-          <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer">
-                <div className="p-3 bg-white/20 rounded-full">
-                  <Icon name="TruckIcon" size={28} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Free Delivery</h3>
-                  <p className="text-sm text-white/80">On orders above ₹999</p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer">
-                <div className="p-3 bg-white/20 rounded-full">
-                  <Icon name="ShieldCheckIcon" size={28} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Secure Payment</h3>
-                  <p className="text-sm text-white/80">100% secure checkout</p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-6 text-white flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer">
-                <div className="p-3 bg-white/20 rounded-full">
-                  <Icon name="SparklesIcon" size={28} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">AI Powered</h3>
-                  <p className="text-sm text-white/80">Smart inventory predictions</p>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
