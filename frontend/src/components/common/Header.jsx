@@ -39,7 +39,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
   };
 
   const navigationItems = [
-    { label: 'Shop', path: '/product-listing', icon: 'ShoppingBagIcon' },
+    { label: 'Products', path: '/product-listing', icon: 'ShoppingBagIcon' },
     { label: 'About Us', path: '/about', icon: 'InformationCircleIcon' },
     { label: 'Orders', path: '/order-confirmation', icon: 'ClipboardDocumentListIcon' },
   ];

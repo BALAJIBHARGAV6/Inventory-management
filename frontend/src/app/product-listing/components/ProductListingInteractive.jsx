@@ -7,8 +7,10 @@ import ProductCard from './ProductCard';
 import FilterPanel from './FilterPanel';
 import SortControl from './SortControl';
 import Icon from '@/components/ui/AppIcon';
+import { useCart } from '@/contexts/CartContext';
 
 export default function ProductListingInteractive({ initialProducts = [] }) {
+  const { cartCount } = useCart();
   const [products] = useState(initialProducts);
   const [sortBy, setSortBy] = useState('relevance');
   const [filters, setFilters] = useState({
@@ -18,11 +20,10 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
     inStockOnly: false,
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [cartCount, setCartCount] = useState(3);
   const [viewMode, setViewMode] = useState('grid');
 
   const breadcrumbItems = [
-    { label: 'Shop', path: '/product-listing' },
+    { label: 'Collection', path: '/product-listing' },
   ];
 
   const filteredAndSortedProducts = useMemo(() => {
@@ -63,75 +64,80 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
     return result;
   }, [products, filters, sortBy]);
 
+  const { addToCart } = useCart();
+
   const handleAddToCart = async (product) => {
-    console.log('Adding to cart:', product.name);
-    setCartCount((prev) => prev + 1);
+    await addToCart(product, 1);
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header cartItemCount={cartCount} />
+    <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white">
+      <Header />
       <main className="pt-16">
-        {/* Hero Banner */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-transparent" />
-          <div className="absolute top-10 right-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-          <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-            <Breadcrumb items={breadcrumbItems} className="mb-6" />
-            <div className="max-w-2xl">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4 animate-slide-up">
-                Shop All
-                <span className="block text-accent">Products</span>
+        {/* Minimalist Hero Section */}
+        <section className="relative py-12 md:py-16 bg-white dark:bg-neutral-950">
+          <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-thin text-neutral-900 dark:text-white mb-3 tracking-tight leading-none">
+                Our Collection
               </h1>
-              <p className="text-lg text-text-secondary animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                Discover our curated collection of premium products. Quality meets style.
+              <p className="text-base text-neutral-600 dark:text-neutral-400 font-light">
+                Discover meticulously curated products that embody elegance, quality, and timeless sophistication
               </p>
             </div>
           </div>
         </section>
 
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
-          {/* Filter Bar */}
-          <div className="flex items-center justify-between gap-4 mb-8 glass-card rounded-2xl p-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowMobileFilters(true)}
-                className="lg:hidden flex items-center gap-2 px-4 py-2.5 text-sm font-medium glass-card rounded-xl hover:bg-muted transition-smooth"
-              >
-                <Icon name="AdjustmentsHorizontalIcon" size={18} />
-                Filters
-              </button>
-              <div className="hidden lg:flex items-center gap-2 text-sm text-text-secondary">
-                <Icon name="Squares2X2Icon" size={18} />
-                <span>{filteredAndSortedProducts.length} products</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              {/* View Mode Toggle */}
-              <div className="hidden md:flex items-center gap-1 p-1 glass-card rounded-lg">
+        <div className="py-16 md:py-20 bg-white dark:bg-neutral-950">
+          <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12">
+            {/* Elegant Filter & Sort Bar */}
+            <div className="flex items-center justify-between mb-16 pb-8 border-b border-neutral-100 dark:border-neutral-800">
+              <div className="flex items-center gap-6">
                 <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-md transition-smooth ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
+                  onClick={() => setShowMobileFilters(true)}
+                  className="lg:hidden flex items-center gap-3 px-6 py-3 border border-neutral-900 dark:border-white text-neutral-900 dark:text-white text-sm font-medium hover:bg-neutral-900 hover:text-white dark:hover:bg-white dark:hover:text-neutral-900 transition-colors duration-300"
                 >
-                  <Icon name="Squares2X2Icon" size={18} />
+                  <Icon name="AdjustmentsHorizontalIcon" size={16} />
+                  Filters
                 </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-md transition-smooth ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'}`}
-                >
-                  <Icon name="ListBulletIcon" size={18} />
-                </button>
+                <div className="hidden lg:flex items-center gap-3 text-sm font-light text-neutral-600 dark:text-neutral-400">
+                  <Icon name="Squares2X2Icon" size={16} />
+                  <span>{filteredAndSortedProducts.length} Products Found</span>
+                </div>
               </div>
               
-              <SortControl
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                totalProducts={filteredAndSortedProducts.length}
-              />
+              <div className="flex items-center gap-4">
+                {/* View Mode Toggle */}
+                <div className="hidden md:flex items-center gap-1 p-1 border border-neutral-200 dark:border-neutral-700 rounded">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded transition-colors duration-300 ${
+                      viewMode === 'grid' 
+                        ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' 
+                        : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    }`}
+                  >
+                    <Icon name="Squares2X2Icon" size={16} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded transition-colors duration-300 ${
+                      viewMode === 'list' 
+                        ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' 
+                        : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    }`}
+                  >
+                    <Icon name="ListBulletIcon" size={16} />
+                  </button>
+                </div>
+                
+                <SortControl
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                  totalProducts={filteredAndSortedProducts.length}
+                />
+              </div>
             </div>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Desktop Filter Panel */}
@@ -147,49 +153,51 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
             {/* Product Grid */}
             <div className="lg:col-span-3">
               {filteredAndSortedProducts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 glass-card rounded-3xl">
-                  <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
-                    <Icon name="MagnifyingGlassIcon" size={40} className="text-muted-foreground" />
+                <div className="flex flex-col items-center justify-center py-24 bg-neutral-50 dark:bg-neutral-900/50 rounded-lg border border-neutral-200 dark:border-neutral-800">
+                  <div className="w-20 h-20 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-8">
+                    <Icon name="MagnifyingGlassIcon" size={32} className="text-neutral-400 dark:text-neutral-500" />
                   </div>
-                  <h2 className="text-2xl font-bold text-text-primary mb-3">No products found</h2>
-                  <p className="text-text-secondary text-center max-w-md mb-6">
-                    We couldn't find any products matching your criteria. Try adjusting your filters.
+                  <h2 className="text-2xl font-light text-neutral-900 dark:text-white mb-4">No Products Found</h2>
+                  <p className="text-neutral-600 dark:text-neutral-400 text-center max-w-md mb-8 font-light">
+                    We couldn't find any products matching your criteria. Try adjusting your filters or search terms.
                   </p>
                   <button
                     onClick={() => setFilters({ priceRange: [0, 200000], categories: [], brands: [], inStockOnly: false })}
-                    className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium hover:scale-105 transition-smooth"
+                    className="px-6 py-3 border border-neutral-900 dark:border-white text-neutral-900 dark:text-white font-medium hover:bg-neutral-900 hover:text-white dark:hover:bg-white dark:hover:text-neutral-900 transition-colors duration-300"
                   >
                     Clear All Filters
                   </button>
                 </div>
               ) : (
-                <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-3' : 'grid-cols-1'}`}>
-                  {filteredAndSortedProducts.map((product, index) => (
-                    <div 
-                      key={product.id} 
-                      className="animate-slide-up"
-                      style={{ animationDelay: `${index * 0.05}s` }}
-                    >
-                      <ProductCard
-                        product={product}
-                        onAddToCart={handleAddToCart}
-                        viewMode={viewMode}
-                      />
-                    </div>
+                <div className={`grid ${
+                  viewMode === 'grid' 
+                    ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' 
+                    : 'grid-cols-1 gap-6'
+                }`}>
+                  {filteredAndSortedProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onAddToCart={handleAddToCart}
+                      viewMode={viewMode}
+                    />
                   ))}
                 </div>
               )}
               
               {/* Load More Button */}
               {filteredAndSortedProducts.length > 0 && (
-                <div className="flex justify-center mt-12">
-                  <button className="px-8 py-4 glass-card rounded-xl font-medium hover:scale-105 transition-smooth flex items-center gap-2">
+                <div className="flex justify-center mt-20">
+                  <button className="group inline-flex items-center gap-3 px-8 py-4 text-sm font-medium text-neutral-900 dark:text-white hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors duration-500 border-b border-neutral-900 dark:border-white">
                     Load More Products
-                    <Icon name="ArrowDownIcon" size={18} />
+                    <svg className="w-4 h-4 group-hover:translate-y-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
                   </button>
                 </div>
               )}
             </div>
+          </div>
           </div>
         </div>
       </main>
@@ -198,20 +206,20 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
       {showMobileFilters && (
         <>
           <div
-            className="fixed inset-0 z-[90] bg-foreground/20 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[90] bg-black/30 backdrop-blur-sm lg:hidden"
             onClick={() => setShowMobileFilters(false)}
           />
-          <div className="fixed inset-y-0 left-0 z-[95] w-80 max-w-full bg-background shadow-modal lg:hidden overflow-y-auto">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-text-primary">Filters</h2>
+          <div className="fixed inset-y-0 left-0 z-[95] w-80 max-w-full bg-white dark:bg-neutral-950 shadow-2xl lg:hidden overflow-y-auto border-r border-neutral-200 dark:border-neutral-800">
+            <div className="p-6 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+              <h2 className="text-lg font-light text-neutral-900 dark:text-white tracking-wide">Filters</h2>
               <button
                 onClick={() => setShowMobileFilters(false)}
-                className="p-2 text-muted-foreground hover:text-text-primary transition-micro"
+                className="p-2 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors duration-300"
               >
-                <Icon name="XMarkIcon" size={24} />
+                <Icon name="XMarkIcon" size={20} />
               </button>
             </div>
-            <div className="p-4">
+            <div className="p-6">
               <FilterPanel
                 filters={filters}
                 onFilterChange={setFilters}

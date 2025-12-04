@@ -8,80 +8,52 @@
   :root {
     /* Light Theme - Default */
     --color-background: #FFFFFF;
-    --color-foreground: #000000;
-    --color-card: #F5F5F5;
-    --color-card-foreground: #000000;
+    --color-foreground: #171717;
+    --color-card: #FFFFFF;
+    --color-card-foreground: #171717;
     --color-popover: #FFFFFF;
-    --color-popover-foreground: #000000;
-    --color-muted: #F5F5F5;
+    --color-popover-foreground: #171717;
+    --color-muted: #FAFAFA;
     --color-muted-foreground: #737373;
-    --color-primary: #000000;
+    --color-primary: #171717;
     --color-primary-foreground: #FFFFFF;
-    --color-secondary: #E5E5E5;
-    --color-secondary-foreground: #000000;
-    --color-accent: #3B82F6;
+    --color-secondary: #F5F5F5;
+    --color-secondary-foreground: #171717;
+    --color-accent: #171717;
     --color-accent-foreground: #FFFFFF;
-    --color-destructive: #DC2626;
+    --color-destructive: #EF4444;
     --color-destructive-foreground: #FFFFFF;
-    --color-error: #DC2626;
-    --color-error-foreground: #FFFFFF;
-    --color-success: #059669;
-    --color-success-foreground: #FFFFFF;
-    --color-warning: #D97706;
-    --color-warning-foreground: #FFFFFF;
     --color-border: #E5E5E5;
     --color-input: #E5E5E5;
-    --color-ring: #3B82F6;
-    --color-text-primary: #000000;
-    --color-text-secondary: #525252;
-    
-    /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.8);
-    --glass-border: rgba(0, 0, 0, 0.1);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --color-ring: #171717;
     
     /* Radius */
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
-    
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
-    --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.16);
+    --radius-sm: 0px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
     
     /* Transitions */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   [data-theme='dark'] {
     --color-background: #0A0A0A;
     --color-foreground: #FFFFFF;
-    --color-card: #1A1A1A;
+    --color-card: #0A0A0A;
     --color-card-foreground: #FFFFFF;
-    --color-popover: #1A1A1A;
+    --color-popover: #0A0A0A;
     --color-popover-foreground: #FFFFFF;
-    --color-muted: #1A1A1A;
+    --color-muted: #171717;
     --color-muted-foreground: #A3A3A3;
     --color-primary: #FFFFFF;
     --color-primary-foreground: #000000;
-    --color-secondary: #2A2A2A;
+    --color-secondary: #262626;
     --color-secondary-foreground: #FFFFFF;
-    --color-accent: #60A5FA;
+    --color-accent: #FFFFFF;
     --color-accent-foreground: #000000;
-    --color-border: #2A2A2A;
-    --color-input: #2A2A2A;
-    --color-ring: #60A5FA;
-    --color-text-primary: #FFFFFF;
-    --color-text-secondary: #A3A3A3;
-    
-    --glass-bg: rgba(26, 26, 26, 0.9);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --color-border: #262626;
+    --color-input: #262626;
+    --color-ring: #FFFFFF;
   }
 }
 

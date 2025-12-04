@@ -1,35 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/AppIcon';
+import { getFilterData } from '@/lib/supabase';
 
 export default function FilterPanel({ filters, onFilterChange, onClose }) {
   const [priceRange, setPriceRange] = useState(filters?.priceRange || [0, 200000]);
   const [selectedCategories, setSelectedCategories] = useState(filters?.categories || []);
   const [selectedBrands, setSelectedBrands] = useState(filters?.brands || []);
   const [inStockOnly, setInStockOnly] = useState(filters?.inStockOnly || false);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState({
     price: true,
     categories: true,
     brands: true,
   });
 
-  const categories = [
-    { name: 'Electronics', count: 8 },
-    { name: 'Fashion', count: 2 },
-    { name: 'Home & Living', count: 1 },
-    { name: 'Sports', count: 2 },
-    { name: 'Books', count: 0 },
-  ];
-  const brands = [
-    { name: 'Apple', count: 4 },
-    { name: 'Samsung', count: 3 },
-    { name: 'Sony', count: 2 },
-    { name: 'Nike', count: 2 },
-    { name: 'Adidas', count: 1 },
-    { name: 'LG', count: 1 },
-    { name: 'Dyson', count: 1 },
-  ];
+  // Fetch filter data from database
+  useEffect(() => {
+    const fetchFilterData = async () => {
+      setLoading(true);
+      try {
+        const filterData = await getFilterData();
+        setCategories(filterData.categories || []);
+        setBrands(filterData.brands || []);
+      } catch (error) {
+        console.error('Error fetching filter data:', error);
+        // Fallback to static data
+        setCategories([
+          { name: 'Electronics', count: 8 },
+          { name: 'Fashion', count: 2 },
+          { name: 'Home & Living', count: 1 },
+          { name: 'Sports', count: 2 },
+        ]);
+        setBrands([
+          { name: 'Apple', count: 4 },
+          { name: 'Samsung', count: 3 },
+          { name: 'Sony', count: 2 },
+          { name: 'Nike', count: 2 },
+          { name: 'Adidas', count: 1 },
+          { name: 'LG', count: 1 },
+          { name: 'Dyson', count: 1 },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilterData();
+  }, []);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -75,26 +96,23 @@ export default function FilterPanel({ filters, onFilterChange, onClose }) {
   const activeFiltersCount = selectedCategories.length + selectedBrands.length + (inStockOnly ? 1 : 0);
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden">
+    <div className="bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800">
       {/* Header */}
-      <div className="p-5 border-b border-border">
+      <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
-              <Icon name="AdjustmentsHorizontalIcon" size={20} className="text-accent" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-text-primary">Filters</h2>
-              {activeFiltersCount > 0 && (
-                <p className="text-xs text-text-secondary">{activeFiltersCount} active</p>
-              )}
-            </div>
+          <div>
+            <h2 className="text-lg font-light text-neutral-900 dark:text-white tracking-wide">Filters</h2>
+            {activeFiltersCount > 0 && (
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light mt-1">
+                {activeFiltersCount} active filter{activeFiltersCount !== 1 ? 's' : ''}
+              </p>
+            )}
           </div>
           <button
             onClick={handleClearFilters}
-            className="text-sm text-accent hover:text-accent/80 transition-smooth font-medium"
+            className="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors font-light tracking-wide"
           >
-            Reset
+            Reset All
           </button>
         </div>
       </div>

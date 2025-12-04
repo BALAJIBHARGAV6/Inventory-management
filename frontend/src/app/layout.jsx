@@ -6,29 +6,21 @@ import { AuthProvider } from '@/contexts/AuthContext';
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#000000',
 };
 
 export const metadata = {
   title: 'InventoryPredictor | Premium E-Commerce',
-  description: 'Your one-stop destination for premium quality products with AI-powered inventory management',
-  keywords: 'ecommerce, shopping, electronics, fashion, AI inventory',
+  description: 'Your one-stop destination for premium quality products',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <head>
-        <link rel="preconnect" href="https://images.unsplash.com" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
-      </head>
-      <body className="min-h-screen bg-background font-body antialiased overflow-x-hidden">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-white dark:bg-neutral-900 font-body antialiased">
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>
-              <main className="fade-in">
-                {children}
-              </main>
+              {children}
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>

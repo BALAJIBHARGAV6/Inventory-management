@@ -25,14 +25,22 @@ export default function LoginPage() {
 
     try {
       if (isLogin) {
+        console.log('Attempting login...');
         const { data, error } = await login(formData.email, formData.password);
+        console.log('Login result:', { data: !!data, error: error?.message });
+        
         if (error) {
-          if (error.message.includes('Invalid login')) {
+          if (error.message.includes('Invalid login') || error.message.includes('invalid_credentials')) {
             setError('Invalid email or password. Please try again.');
+          } else if (error.message.includes('Database connection not configured')) {
+            setError('Service temporarily unavailable. Using demo mode.');
+            // Still allow redirect for demo mode
+            setTimeout(() => router.push('/homepage'), 1000);
           } else {
             setError(error.message || 'Failed to login');
           }
         } else if (data?.user) {
+          console.log('Login successful, redirecting...');
           router.push('/homepage');
         }
       } else {
@@ -46,12 +54,20 @@ export default function LoginPage() {
           setLoading(false);
           return;
         }
+        
+        console.log('Attempting signup...');
         const { data, error } = await register(formData.email, formData.password, formData.fullName);
+        console.log('Signup result:', { data: !!data, error: error?.message });
+        
         if (error) {
-          if (error.message.includes('already registered')) {
+          if (error.message.includes('already registered') || error.message.includes('already_exists')) {
             setError('This email is already registered. Please sign in.');
           } else if (error.message.includes('valid email')) {
             setError('Please enter a valid email address.');
+          } else if (error.message.includes('Database connection not configured')) {
+            setError('Service temporarily unavailable. Using demo mode.');
+            // Still allow redirect for demo mode
+            setTimeout(() => router.push('/homepage'), 1000);
           } else {
             setError(error.message || 'Failed to create account');
           }
@@ -60,14 +76,18 @@ export default function LoginPage() {
           if (data.user.identities?.length === 0) {
             setError('This email is already registered. Please sign in.');
           } else {
-            // Success - redirect or show confirmation message
+            console.log('Signup successful, redirecting...');
             router.push('/homepage');
           }
         }
       }
     } catch (err) {
       console.error('Auth error:', err);
-      setError('Connection error. Please check your internet and try again.');
+      if (err.message && err.message.includes('fetch')) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -83,6 +103,8 @@ export default function LoginPage() {
             </div>
             <span className="text-2xl font-bold text-primary">InventoryPredictor</span>
           </Link>
+          
+          
           <h1 className="text-2xl font-bold text-text-primary">
             {isLogin ? 'Welcome Back' : 'Create Account'}
           </h1>
