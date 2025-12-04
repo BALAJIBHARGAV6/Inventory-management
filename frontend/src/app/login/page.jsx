@@ -25,27 +25,49 @@ export default function LoginPage() {
 
     try {
       if (isLogin) {
-        const { error } = await login(formData.email, formData.password);
+        const { data, error } = await login(formData.email, formData.password);
         if (error) {
-          setError(error.message || 'Failed to login');
-        } else {
+          if (error.message.includes('Invalid login')) {
+            setError('Invalid email or password. Please try again.');
+          } else {
+            setError(error.message || 'Failed to login');
+          }
+        } else if (data?.user) {
           router.push('/homepage');
         }
       } else {
-        if (!formData.fullName) {
+        if (!formData.fullName.trim()) {
           setError('Please enter your full name');
           setLoading(false);
           return;
         }
-        const { error } = await register(formData.email, formData.password, formData.fullName);
+        if (formData.password.length < 6) {
+          setError('Password must be at least 6 characters');
+          setLoading(false);
+          return;
+        }
+        const { data, error } = await register(formData.email, formData.password, formData.fullName);
         if (error) {
-          setError(error.message || 'Failed to register');
-        } else {
-          router.push('/homepage');
+          if (error.message.includes('already registered')) {
+            setError('This email is already registered. Please sign in.');
+          } else if (error.message.includes('valid email')) {
+            setError('Please enter a valid email address.');
+          } else {
+            setError(error.message || 'Failed to create account');
+          }
+        } else if (data?.user) {
+          // Check if email confirmation is required
+          if (data.user.identities?.length === 0) {
+            setError('This email is already registered. Please sign in.');
+          } else {
+            // Success - redirect or show confirmation message
+            router.push('/homepage');
+          }
         }
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      console.error('Auth error:', err);
+      setError('Connection error. Please check your internet and try again.');
     } finally {
       setLoading(false);
     }

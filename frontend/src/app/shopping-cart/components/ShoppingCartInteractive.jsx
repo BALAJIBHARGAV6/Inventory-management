@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/common/Header';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import CartItem from './CartItem';
 import OrderSummary from './OrderSummary';
 import EmptyCart from './EmptyCart';
 
-export default function ShoppingCartInteractive({ initialCartItems = [] }) {
+export default function ShoppingCartInteractive() {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const { cart, cartCount, updateQuantity, removeFromCart, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const breadcrumbItems = [
@@ -18,16 +19,24 @@ export default function ShoppingCartInteractive({ initialCartItems = [] }) {
     { label: 'Shopping Cart', path: '/shopping-cart' },
   ];
 
-  const handleQuantityChange = async (itemId, newQuantity) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-    );
+  // Transform cart items for display
+  const cartItems = cart.map(item => ({
+    ...item,
+    image: item.thumbnail || item.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+    imageAlt: item.name,
+    variant: item.brand || '',
+    originalPrice: item.originalPrice || item.original_price || item.price,
+    maxStock: item.stock_quantity || 10,
+    inStock: true,
+    estimatedDelivery: 'Dec 15 - Dec 20',
+  }));
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    updateQuantity(itemId, newQuantity);
   };
 
   const handleRemoveItem = (itemId) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== itemId));
+    removeFromCart(itemId);
   };
 
   const handleSaveForLater = (itemId) => {
@@ -36,7 +45,7 @@ export default function ShoppingCartInteractive({ initialCartItems = [] }) {
 
   const handleCheckout = async () => {
     setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push('/checkout-process');
   };
 
@@ -45,7 +54,7 @@ export default function ShoppingCartInteractive({ initialCartItems = [] }) {
   const tax = Math.round(subtotal * 0.18);
   const discount = 0;
   const total = subtotal + shipping + tax - discount;
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const itemCount = cartCount;
 
   return (
     <div className="min-h-screen bg-background">

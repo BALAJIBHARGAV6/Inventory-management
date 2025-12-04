@@ -20,24 +20,62 @@ export default function HomepageInteractive({ pageData }) {
       <Header onSearchSubmit={handleSearch} />
       <main className="pt-16">
         {/* Hero Section */}
-        <section className="py-6 md:py-10">
+        <section className="py-4 md:py-8">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <HeroCarousel slides={pageData?.heroSlides} />
           </div>
         </section>
 
+        {/* Promo Banner */}
+        <section className="py-4">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 text-white flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer">
+                <div className="p-3 bg-white/20 rounded-full">
+                  <Icon name="TruckIcon" size={28} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Free Delivery</h3>
+                  <p className="text-sm text-white/80">On orders above ₹999</p>
+                </div>
+              </div>
+              <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 text-white flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer">
+                <div className="p-3 bg-white/20 rounded-full">
+                  <Icon name="ShieldCheckIcon" size={28} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Secure Payment</h3>
+                  <p className="text-sm text-white/80">100% secure checkout</p>
+                </div>
+              </div>
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-6 text-white flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer">
+                <div className="p-3 bg-white/20 rounded-full">
+                  <Icon name="SparklesIcon" size={28} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">AI Powered</h3>
+                  <p className="text-sm text-white/80">Smart inventory predictions</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Categories Section */}
-        <section className="py-12 md:py-16 bg-muted/50">
+        <section className="py-10 md:py-14">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
-                Shop by Category
-              </h2>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
+                  Shop by Category
+                </h2>
+                <p className="text-muted-foreground mt-1">Browse our wide range of products</p>
+              </div>
               <Link 
                 href="/product-listing" 
-                className="text-sm font-medium text-accent hover:text-accent/80 flex items-center gap-1 transition-micro"
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg font-medium hover:bg-primary/20 transition-all"
               >
-                View All
+                View All Categories
                 <Icon name="ArrowRightIcon" size={16} />
               </Link>
             </div>
@@ -49,12 +87,32 @@ export default function HomepageInteractive({ pageData }) {
           </div>
         </section>
 
+        {/* Flash Sale Banner */}
+        <section className="py-6">
+          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+            <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                  <span className="inline-block px-3 py-1 bg-white/20 rounded-full text-sm font-semibold mb-3">Limited Time Offer</span>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-2">Mega Sale is Live!</h2>
+                  <p className="text-lg text-white/90">Get up to 50% off on selected items</p>
+                </div>
+                <Link href="/product-listing" className="px-8 py-4 bg-white text-orange-600 rounded-xl font-bold text-lg hover:bg-white/90 transition-all shadow-lg hover:shadow-xl">
+                  Shop Now
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Bestsellers Section */}
-        <ProductSection title="Bestsellers" products={pageData?.bestsellers} viewAllLink="/product-listing?sort=bestseller" />
+        <ProductSection title="🔥 Bestsellers" products={pageData?.bestsellers} viewAllLink="/product-listing?sort=bestseller" />
         
         {/* New Arrivals Section */}
-        <section className="bg-muted/50">
-          <ProductSection title="New Arrivals" products={pageData?.newArrivals} viewAllLink="/product-listing?sort=newest" />
+        <section className="bg-gradient-to-b from-muted/50 to-background">
+          <ProductSection title="✨ New Arrivals" products={pageData?.newArrivals} viewAllLink="/product-listing?sort=newest" />
         </section>
 
         {/* Trust Indicators */}
