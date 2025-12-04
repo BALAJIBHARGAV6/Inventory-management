@@ -2,77 +2,71 @@
 
 > **AI-Powered E-Commerce Platform with Intelligent Inventory Forecasting**
 
-An end-to-end inventory management system built for the Indian e-commerce market, featuring OpenAI-powered demand forecasting, automated purchase order generation, and real-time inventory tracking.
+A full-stack e-commerce application similar to Amazon/Flipkart, built for the Indian market with **Groq AI-powered demand forecasting** and real-time inventory management.
 
 ![Project Status](https://img.shields.io/badge/status-active-success.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![Fastify](https://img.shields.io/badge/Fastify-4-white)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)
+![Groq](https://img.shields.io/badge/Groq-LLaMA_3.1-orange)
 
 ---
 
-## 📋 Table of Contents
+## 🎯 Quick Start
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Prerequisites](#-prerequisites)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Running the Application](#-running-the-application)
-- [API Documentation](#-api-documentation)
-- [Database Schema](#-database-schema)
-- [AI Features](#-ai-features)
-- [Deployment](#-deployment)
-- [Testing](#-testing)
-- [Contributing](#-contributing)
+```bash
+# Backend (Terminal 1)
+cd backend && npm install && npm run dev
+# Runs on http://localhost:4000
+
+# Frontend (Terminal 2)  
+cd frontend && npm install && npm run dev
+# Runs on http://localhost:3000
+```
+
+**Demo Pages:**
+- 🏠 Homepage: http://localhost:3000/homepage
+- 🛍️ Products: http://localhost:3000/product-listing
+- 📊 Admin Dashboard: http://localhost:3000/admin
+- 👤 Login: http://localhost:3000/login
 
 ---
 
 ## ✨ Features
 
-### Core Functionality
-- **🛒 E-Commerce Storefront**: Product catalog with Indian Rupee (₹) pricing
-- **📊 Real-Time Inventory Tracking**: Live stock levels across multiple warehouses
-- **🤖 AI-Powered Forecasting**: 30/60/90-day demand predictions using OpenAI GPT-4
-- **📝 Automated Purchase Orders**: AI-generated PO drafts with reasoning and supplier recommendations
-- **📈 Analytics Dashboard**: Comprehensive inventory insights and forecast visualization
-- **⚠️ Smart Alerts**: Automated low-stock notifications with reorder suggestions
+### E-Commerce Storefront
+- **🛒 Product Catalog**: Browse by categories with search & filters
+- **🛍️ Shopping Cart**: Persistent cart with quantity management
+- **👤 User Accounts**: Registration, login, profile management
+- **📦 Order Management**: Place orders, track status, view history
+- **💳 Checkout Flow**: Address capture and order confirmation
 
-### Indian Market Localization
-- ₹ INR currency formatting
-- Indian address formats (PIN code, state, city)
-- Payment gateway integration (Razorpay/UPI ready)
-- Indian business communication style
+### Admin Dashboard
+- **📊 Inventory Stats**: Total products, low stock, out of stock counts
+- **📈 Sales Analytics**: Revenue, orders, items sold metrics
+- **🤖 AI Forecasting**: Generate 30/60/90 day demand predictions
+- **⚠️ Low Stock Alerts**: Automatic identification of items needing restock
+- **💡 AI Recommendations**: Smart reorder quantity suggestions
 
-### AI Capabilities
-- **Demand Forecasting**: Analyzes historical sales patterns, seasonality, and trends
-- **Natural Language Explanations**: Plain-English reasoning for every forecast
-- **Smart Reordering**: Context-aware purchase quantity recommendations
-- **Supplier Selection**: AI-driven supplier recommendations based on pricing and lead times
+### AI Capabilities (Powered by Groq)
+- **Demand Forecasting**: Predicts future product demand using LLaMA 3.1 70B
+- **Reorder Recommendations**: Urgency-based suggestions (high/medium/low)
+- **Pattern Analysis**: Identifies trends from sales history
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
-- **Runtime**: Node.js 20+ with TypeScript
-- **Framework**: Fastify (high-performance REST API)
-- **Database**: Supabase (Managed PostgreSQL)
-- **ORM**: Prisma
-- **Queue**: BullMQ + Redis
-- **AI**: OpenAI API (GPT-4 Turbo)
-
-### Frontend
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Charts**: Recharts
-- **Auth**: Supabase Auth
-
-### DevOps
-- **Containerization**: Docker + Docker Compose
-- **Backend Deployment**: Render/Railway
-- **Frontend Deployment**: Vercel
-- **CI/CD**: GitHub Actions
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **Frontend** | Next.js 14 | React framework with App Router |
+| **Styling** | TailwindCSS | Utility-first CSS |
+| **Backend** | Fastify | High-performance Node.js API |
+| **Language** | TypeScript | Type-safe JavaScript |
+| **Database** | Supabase | Managed PostgreSQL + Auth |
+| **AI/ML** | Groq (LLaMA 3.1 70B) | Demand forecasting |
+| **Icons** | Lucide React | Beautiful icons |
 
 ---
 
@@ -80,38 +74,51 @@ An end-to-end inventory management system built for the Indian e-commerce market
 
 ```
 inventory-management/
-├── backend/
+├── backend/                    # Fastify API Server
 │   ├── src/
-│   │   ├── config/          # Database, Redis, OpenAI configuration
-│   │   ├── services/        # Business logic (inventory, forecast, PO, OpenAI)
-│   │   ├── routes/          # API endpoints
-│   │   ├── jobs/            # BullMQ workers (forecast generation, notifications)
-│   │   ├── types/           # TypeScript type definitions
-│   │   └── server.ts        # Fastify server entry point
-│   ├── prisma/
-│   │   └── schema.prisma    # Database schema
-│   ├── Dockerfile
+│   │   ├── config/
+│   │   │   ├── database.ts    # Supabase client
+│   │   │   └── groq.ts        # Groq AI client
+│   │   ├── routes/
+│   │   │   ├── auth.route.ts  # User authentication
+│   │   │   ├── products.route.ts
+│   │   │   ├── orders.route.ts
+│   │   │   ├── inventory.route.ts
+│   │   │   └── forecast.route.ts  # AI predictions
+│   │   ├── services/
+│   │   │   ├── ai.service.ts      # Groq integration
+│   │   │   └── inventory.service.ts
+│   │   └── server.ts          # Entry point
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── frontend/
-│   ├── app/                 # Next.js App Router pages
-│   │   ├── (storefront)/   # Public e-commerce pages
-│   │   └── admin/          # Admin dashboard
-│   ├── components/          # React components
-│   │   ├── ui/             # shadcn/ui components
-│   │   └── admin/          # Admin-specific components
-│   ├── lib/                # Utility functions, Supabase client
+├── frontend/                   # Next.js Application
+│   ├── src/
+│   │   ├── app/               # Pages (App Router)
+│   │   │   ├── homepage/
+│   │   │   ├── product-listing/
+│   │   │   ├── product-detail/
+│   │   │   ├── cart/
+│   │   │   ├── checkout/
+│   │   │   ├── login/
+│   │   │   ├── profile/
+│   │   │   ├── admin/         # Admin Dashboard
+│   │   │   └── order-confirmation/
+│   │   ├── components/
+│   │   │   ├── common/        # Header, Footer
+│   │   │   └── ui/            # Reusable components
+│   │   ├── contexts/          # React Context
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── CartContext.jsx
+│   │   │   └── ThemeContext.jsx
+│   │   └── lib/
+│   │       └── supabase.js    # Supabase client
+│   ├── supabase/
+│   │   ├── schema.sql         # Database schema
+│   │   └── seed.sql           # Sample data
 │   └── package.json
 │
-├── supabase/
-│   └── migrations/
-│       └── 001_initial_schema.sql
-│
-├── scripts/
-│   └── seed-database.ts    # Sample data generation
-│
-├── docker-compose.yml
+├── DOCUMENTATION.md           # Detailed documentation
 └── README.md
 ```
 
@@ -119,28 +126,16 @@ inventory-management/
 
 ## 📦 Prerequisites
 
-Before you begin, ensure you have the following installed:
+- **Node.js**: v18 or higher
+- **npm**: Package manager
+- **Git**: Version control
 
-- **Node.js**: v20 or higher ([Download](https://nodejs.org/))
-- **pnpm**: Package manager ([Install](https://pnpm.io/installation))
-- **Docker**: For containerized services ([Download](https://www.docker.com/))
-- **Git**: Version control ([Download](https://git-scm.com/))
+### External Services Required
 
-### External Services
-
-You'll need accounts for:
-
-1. **Supabase** (Database & Auth): [https://supabase.com](https://supabase.com)
-   - Create a new project
-   - Note your `Project URL` and `anon/public key`
-   - Get the `service_role key` from Project Settings → API
-
-2. **OpenAI** (AI Forecasting): [https://platform.openai.com](https://platform.openai.com)
-   - Create an API key
-   - Ensure you have GPT-4 Turbo access
-
-3. **Redis Cloud** (Optional for production): [https://redis.com/try-free](https://redis.com/try-free)
-   - Or use local Redis via Docker
+| Service | Purpose | Sign Up |
+|---------|---------|---------|
+| Supabase | Database & Auth | [supabase.com](https://supabase.com) |
+| Groq | AI Predictions | [groq.com](https://console.groq.com) |
 
 ---
 

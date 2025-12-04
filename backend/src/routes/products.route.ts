@@ -1,201 +1,125 @@
 import { FastifyInstance } from 'fastify';
-import prisma from '../config/database';
+import { supabase } from '../config/database';
 
 export default async function productsRoutes(fastify: FastifyInstance) {
   // Get all products
-  fastify.get('/', async (request, reply) => {
+  fastify.get('/', async (request: any, reply: any) => {
     try {
-      const { category, limit, offset } = request.query as any;
+      const { category, search, minPrice, maxPrice, limit = 20, offset = 0 } = request.query;
 
-      const where: any = {
-        isActive: true,
-      };
+      let query = supabase
+        .from('products')
+        .select('*', { count: 'exact' })
+        .eq('is_active', true);
 
-      if (category) {
-        where.category = category;
-      }
+      if (category) query = query.eq('category_id', category);
+      if (search) query = query.ilike('name', `%${search}%`);
+      if (minPrice) query = query.gte('price', minPrice);
+      if (maxPrice) query = query.lte('price', maxPrice);
 
-      const products = await prisma.product.findMany({
-        where,
-        include: {
-          variants: {
-            where: { isActive: true },
-            include: {
-              inventory: true,
-            },
-          },
-        },
-        take: limit ? parseInt(limit) : 20,
-        skip: offset ? parseInt(offset) : 0,
-      });
+      query = query.range(parseInt(offset), parseInt(offset) + parseInt(limit) - 1);
 
-      const total = await prisma.product.count({ where });
+      const { data, error, count } = await query;
 
-      return reply.send({
-        data: products,
-        pagination: {
-          limit: limit ? parseInt(limit) : 20,
-          offset: offset ? parseInt(offset) : 0,
-          total,
-        },
-      });
+      if (error) throw error;
+
+      return { products: data, total: count };
     } catch (error: any) {
       return reply.status(500).send({ error: error.message });
     }
   });
 
   // Get product by ID
-  fastify.get('/:id', async (request, reply) => {
+  fastify.get('/:id', async (request: any, reply: any) => {
     try {
-      const { id } = request.params as any;
+      const { id } = request.params;
 
-      const product = await prisma.product.findUnique({
-        where: { id },
-        include: {
-          variants: {
-            where: { isActive: true },
-            include: {
-              inventory: true,
-            },
-          },
-        },
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, categories(*)')
+        .eq('id', id)
+        .single();
 
-      if (!product) {
-        return reply.status(404).send({ error: 'Product not found' });
-      }
+      if (error) throw error;
+      if (!data) return reply.status(404).send({ error: 'Product not found' });
 
-      return reply.send(product);
+      return { product: data };
     } catch (error: any) {
       return reply.status(500).send({ error: error.message });
     }
   });
 
-  // Create product (admin only)
-  fastify.post('/', async (request, reply) => {
+  // Create product (admin)
+  fastify.post('/', async (request: any, reply: any) => {
     try {
-      const { sku, name, description, category, brand, images } = request.body as any;
+      const productData = request.body;
 
-      if (!sku || !name) {
-        return reply.status(400).send({ error: 'SKU and name are required' });
-      }
+      const { data, error } = await supabase
+        .from('products')
+        .insert(productData)
+        .select()
+        .single();
 
-      const product = await prisma.product.create({
-        data: {
-          sku,
-          name,
-          description,
-          category,
-          brand,
-          images: images || [],
-        },
-      });
-
-      return reply.status(201).send(product);
+      if (error) throw error;
+      return reply.status(201).send({ product: data });
     } catch (error: any) {
       return reply.status(400).send({ error: error.message });
     }
   });
 
   // Update product
-  fastify.put('/:id', async (request, reply) => {
+  fastify.put('/:id', async (request: any, reply: any) => {
     try {
-      const { id } = request.params as any;
-      const updates = request.body as any;
+      const { id } = request.params;
+      const updates = request.body;
 
-      const product = await prisma.product.update({
-        where: { id },
-        data: updates,
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
 
-      return reply.send(product);
+      if (error) throw error;
+      return { product: data };
     } catch (error: any) {
       return reply.status(400).send({ error: error.message });
     }
   });
 
-  // Delete product (soft delete)
-  fastify.delete('/:id', async (request, reply) => {
+  // Update stock
+  fastify.patch('/:id/stock', async (request: any, reply: any) => {
     try {
-      const { id } = request.params as any;
+      const { id } = request.params;
+      const { quantity } = request.body;
 
-      const product = await prisma.product.update({
-        where: { id },
-        data: { isActive: false },
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .update({ stock_quantity: quantity })
+        .eq('id', id)
+        .select()
+        .single();
 
-      return reply.send(product);
+      if (error) throw error;
+      return { product: data };
     } catch (error: any) {
       return reply.status(400).send({ error: error.message });
     }
   });
 
-  // Get variants
-  fastify.get('/variants/all', async (request, reply) => {
+  // Get categories
+  fastify.get('/categories/all', async (_request: any, reply: any) => {
     try {
-      const { limit, offset } = request.query as any;
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
 
-      const variants = await prisma.variant.findMany({
-        where: { isActive: true },
-        include: {
-          product: true,
-          inventory: true,
-        },
-        take: limit ? parseInt(limit) : 50,
-        skip: offset ? parseInt(offset) : 0,
-      });
-
-      return reply.send({
-        data: variants,
-        count: variants.length,
-      });
+      if (error) throw error;
+      return { categories: data };
     } catch (error: any) {
       return reply.status(500).send({ error: error.message });
-    }
-  });
-
-  // Create variant
-  fastify.post('/variants', async (request, reply) => {
-    try {
-      const {
-        product_id,
-        sku,
-        attributes,
-        price_inr,
-        compare_at_price_inr,
-        cost_price_inr,
-        weight_grams,
-      } = request.body as any;
-
-      if (!product_id || !sku || !price_inr) {
-        return reply
-          .status(400)
-          .send({ error: 'product_id, sku, and price_inr are required' });
-      }
-
-      const variant = await prisma.variant.create({
-        data: {
-          productId: product_id,
-          sku,
-          attributes: attributes || {},
-          priceInr: price_inr,
-          compareAtPriceInr: compare_at_price_inr,
-          costPriceInr: cost_price_inr,
-          weightGrams: weight_grams,
-        },
-      });
-
-      // Create inventory record for this variant
-      await prisma.inventory.create({
-        data: {
-          sku: variant.sku,
-          qtyAvailable: 0,
-        },
-      });
-
-      return reply.status(201).send(variant);
-    } catch (error: any) {
-      return reply.status(400).send({ error: error.message });
     }
   });
 }

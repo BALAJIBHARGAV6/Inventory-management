@@ -5,84 +5,72 @@ import rateLimit from '@fastify/rate-limit';
 import jwt from '@fastify/jwt';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-// Routes - Note: IDE may show errors due to TS server cache, but files exist and compile successfully
-// @ts-ignore
-import inventoryRoutes from './routes/inventory.route';
-// @ts-ignore
-import forecastRoutes from './routes/forecast.route';
-// @ts-ignore
-import poRoutes from './routes/po.route';
-// @ts-ignore
+// Routes
+import authRoutes from './routes/auth.route';
 import productsRoutes from './routes/products.route';
-// @ts-ignore
-import suppliersRoutes from './routes/suppliers.route';
+import ordersRoutes from './routes/orders.route';
+import forecastRoutes from './routes/forecast.route';
+import inventoryRoutes from './routes/inventory.route';
 
 const server = Fastify({
   logger: {
     level: process.env.LOG_LEVEL || 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        translateTime: 'HH:MM:ss Z',
-        ignore: 'pid,hostname',
-      },
-    },
   },
 });
 
 // Register plugins
 async function registerPlugins() {
-  // Security
-  await server.register(helmet);
+  await server.register(helmet, { contentSecurityPolicy: false });
 
-  // CORS
   await server.register(cors, {
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   });
 
-  // Rate limiting
   await server.register(rateLimit, {
     max: 100,
-    timeWindow: '15 minutes',
+    timeWindow: '1 minute',
   });
 
-  // JWT Authentication
   await server.register(jwt, {
     secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
   });
 }
 
+// Auth decorator for protected routes
+server.decorate('authenticate', async function (request: any, reply: any) {
+  try {
+    await request.jwtVerify();
+  } catch (err) {
+    reply.status(401).send({ error: 'Unauthorized' });
+  }
+});
+
 // Register routes
 async function registerRoutes() {
-  // Health check
-  server.get('/health', async () => {
-    return { status: 'ok', timestamp: new Date().toISOString() };
-  });
+  server.get('/health', async () => ({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  }));
 
-  // API routes
+  await server.register(authRoutes, { prefix: '/api/auth' });
   await server.register(productsRoutes, { prefix: '/api/products' });
-  await server.register(inventoryRoutes, { prefix: '/api/inventory' });
+  await server.register(ordersRoutes, { prefix: '/api/orders' });
   await server.register(forecastRoutes, { prefix: '/api/forecast' });
-  await server.register(poRoutes, { prefix: '/api/po' });
-  await server.register(suppliersRoutes, { prefix: '/api/suppliers' });
+  await server.register(inventoryRoutes, { prefix: '/api/inventory' });
 }
 
 // Error handler
-server.setErrorHandler((error: Error & { statusCode?: number }, _request: any, reply: any) => {
+server.setErrorHandler((error: any, _request: any, reply: any) => {
   server.log.error(error);
-
   const statusCode = error.statusCode || 500;
-  const message = error.message || 'Internal Server Error';
-
   reply.status(statusCode).send({
     error: {
-      message,
+      message: error.message || 'Internal Server Error',
       statusCode,
-      timestamp: new Date().toISOString(),
     },
   });
 });
@@ -97,30 +85,12 @@ async function start() {
     const host = process.env.HOST || '0.0.0.0';
 
     await server.listen({ port, host });
-
-    console.log(`
-    🚀 Server ready at: http://${host}:${port}
-    📊 Health check: http://${host}:${port}/health
-    🔧 Environment: ${process.env.NODE_ENV || 'development'}
-    `);
+    console.log(`🚀 Server running at http://${host}:${port}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);
   }
 }
-
-// Handle graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('\n👋 Shutting down gracefully...');
-  await server.close();
-  process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-  console.log('\n👋 Shutting down gracefully...');
-  await server.close();
-  process.exit(0);
-});
 
 start();
 

@@ -1,92 +1,86 @@
-import { FastifyInstance } from 'fastify';
+/**
+ * Inventory Routes
+ * @module routes/inventory
+ */
+
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import inventoryService from '../services/inventory.service';
 
-export default async function inventoryRoutes(fastify: FastifyInstance) {
-  // Get all inventory
-  fastify.get('/', async (request: any, reply: any) => {
-    try {
-      const { lowStock, location, limit, offset } = request.query as any;
+interface InventoryQuery {
+  lowStock?: string;
+  limit?: string;
+  offset?: string;
+}
 
+interface IdParams {
+  id: string;
+}
+
+interface StockUpdateBody {
+  qtyChange: number;
+}
+
+/**
+ * Register inventory routes
+ * @param {FastifyInstance} fastify - Fastify instance
+ */
+export default async function inventoryRoutes(fastify: FastifyInstance): Promise<void> {
+  
+  // Get all inventory with optional low stock filter
+  fastify.get('/', async (request: FastifyRequest<{ Querystring: InventoryQuery }>, reply: FastifyReply) => {
+    try {
+      const { lowStock, limit, offset } = request.query;
       const inventory = await inventoryService.getAllInventory({
         lowStock: lowStock === 'true',
-        location,
-        limit: limit ? parseInt(limit) : undefined,
-        offset: offset ? parseInt(offset) : undefined,
+        limit: limit ? parseInt(limit) : 50,
+        offset: offset ? parseInt(offset) : 0,
       });
-
-      return reply.send({
-        data: inventory,
-        count: inventory.length,
-      });
-    } catch (error: any) {
+      return { data: inventory, count: inventory.length };
+    } catch (error: Error | any) {
       return reply.status(500).send({ error: error.message });
     }
   });
 
-  // Get inventory by SKU
-  fastify.get('/:sku', async (request: any, reply: any) => {
+  // Get inventory stats summary
+  fastify.get('/stats', async (_request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const { sku } = request.params as any;
-      const { location } = request.query as any;
+      const stats = await inventoryService.getInventoryStats();
+      return stats;
+    } catch (error: Error | any) {
+      return reply.status(500).send({ error: error.message });
+    }
+  });
 
-      const inventory = await inventoryService.getInventoryBySku(sku, location);
+  // Get low stock alerts
+  fastify.get('/alerts/low-stock', async (_request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const items = await inventoryService.getLowStockItems();
+      return { data: items, count: items.length };
+    } catch (error: Error | any) {
+      return reply.status(500).send({ error: error.message });
+    }
+  });
 
-      return reply.send(inventory);
-    } catch (error: any) {
+  // Get product by ID
+  fastify.get('/:id', async (request: FastifyRequest<{ Params: IdParams }>, reply: FastifyReply) => {
+    try {
+      const { id } = request.params;
+      const inventory = await inventoryService.getInventoryById(id);
+      return inventory;
+    } catch (error: Error | any) {
       return reply.status(404).send({ error: error.message });
     }
   });
 
-  // Update inventory
-  fastify.put('/:sku', async (request: any, reply: any) => {
+  // Update product stock
+  fastify.put('/:id/stock', async (request: FastifyRequest<{ Params: IdParams; Body: StockUpdateBody }>, reply: FastifyReply) => {
     try {
-      const { sku } = request.params as any;
-      const { qtyChange, changeType, reason, location } = request.body as any;
-
-      const updated = await inventoryService.updateInventory({
-        sku,
-        qtyChange,
-        changeType,
-        reason,
-        location,
-      });
-
-      return reply.send(updated);
-    } catch (error: any) {
+      const { id } = request.params;
+      const { qtyChange } = request.body;
+      const updated = await inventoryService.updateInventory({ productId: id, qtyChange });
+      return updated;
+    } catch (error: Error | any) {
       return reply.status(400).send({ error: error.message });
-    }
-  });
-
-  // Adjust inventory (manual)
-  fastify.post('/adjust', async (request: any, reply: any) => {
-    try {
-      const { sku, qtyChange, reason, changedBy } = request.body as any;
-
-      const updated = await inventoryService.updateInventory({
-        sku,
-        qtyChange,
-        changeType: 'adjustment',
-        reason,
-        changedBy,
-      });
-
-      return reply.status(200).send(updated);
-    } catch (error: any) {
-      return reply.status(400).send({ error: error.message });
-    }
-  });
-
-  // Get low stock items
-  fastify.get('/alerts/low-stock', async (_request: any, reply: any) => {
-    try {
-      const lowStockItems = await inventoryService.getLowStockItems();
-
-      return reply.send({
-        data: lowStockItems,
-        count: (lowStockItems as any[]).length,
-      });
-    } catch (error: any) {
-      return reply.status(500).send({ error: error.message });
     }
   });
 }
