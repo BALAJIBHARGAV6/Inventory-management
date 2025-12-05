@@ -236,33 +236,55 @@ export default function Header({ onSearchSubmit, onCartClick }) {
         </div>
       </header>
 
-      {/* Full Screen Mobile Menu Overlay with Glassmorphism */}
+      {/* Full Screen Mobile Menu Overlay - GPU Accelerated */}
       <div
-        className={`fixed inset-0 z-[200] lg:hidden transition-all duration-500 ${
-          isMobileMenuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+        className={`fixed inset-0 z-[200] lg:hidden will-change-transform ${
+          isMobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
         }`}
+        style={{
+          opacity: isMobileMenuOpen ? 1 : 0,
+          visibility: isMobileMenuOpen ? 'visible' : 'hidden',
+          transition: 'opacity 300ms ease-out, visibility 300ms ease-out',
+        }}
       >
-        {/* Backdrop with glassmorphism effect */}
+        {/* Backdrop - Simplified for performance */}
         <div 
-          className="absolute inset-0 bg-black/70 backdrop-blur-xl"
+          className="absolute inset-0 bg-black/80"
+          style={{
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+          }}
           onClick={closeMobileMenu}
         />
         
-        {/* Menu Content */}
-        <div className={`relative h-full flex flex-col transition-all duration-500 delay-100 ${
-          isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'
-        }`}>
-          {/* Close Button */}
-          <div className="flex justify-end p-6">
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-colors"
-              aria-label="Close menu"
-            >
-              <Icon name="XMarkIcon" size={32} />
-            </button>
-          </div>
+        {/* Menu Content - Hardware accelerated */}
+        <div 
+          className="relative h-full flex flex-col will-change-transform"
+          style={{
+            opacity: isMobileMenuOpen ? 1 : 0,
+            transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(-20px)',
+            transition: 'opacity 250ms ease-out 50ms, transform 250ms ease-out 50ms',
+          }}
+        >
+          {/* Close Button - Fixed position for reliable clicking */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsMobileMenuOpen(false);
+            }}
+            className="absolute top-4 right-4 z-[999] w-14 h-14 flex items-center justify-center text-white bg-white/10 hover:bg-white/20 rounded-full transition-all duration-200 active:scale-90"
+            aria-label="Close menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          
+          {/* Spacer for close button */}
+          <div className="h-20"></div>
 
           {/* Navigation Links */}
           <nav className="flex-1 flex flex-col justify-center px-8 -mt-20">
@@ -272,10 +294,12 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 href={item?.path}
                 prefetch={true}
                 onClick={closeMobileMenu}
-                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
-                  isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-                }`}
-                style={{ transitionDelay: `${150 + index * 50}ms` }}
+                className="group flex items-center gap-6 py-5 border-b border-white/10"
+                style={{
+                  opacity: isMobileMenuOpen ? 1 : 0,
+                  transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-16px)',
+                  transition: `opacity 200ms ease-out ${100 + index * 40}ms, transform 200ms ease-out ${100 + index * 40}ms`,
+                }}
               >
                 <Icon name={item?.icon} size={28} className="text-white/60 group-hover:text-white transition-colors" />
                 <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
@@ -287,10 +311,12 @@ export default function Header({ onSearchSubmit, onCartClick }) {
               href="/shopping-cart"
               prefetch={true}
               onClick={closeMobileMenu}
-              className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
-                isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-              }`}
-              style={{ transitionDelay: '250ms' }}
+              className="group flex items-center gap-6 py-5 border-b border-white/10"
+              style={{
+                opacity: isMobileMenuOpen ? 1 : 0,
+                transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-16px)',
+                transition: 'opacity 200ms ease-out 180ms, transform 200ms ease-out 180ms',
+              }}
             >
               <Icon name="ShoppingCartIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
               <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
@@ -309,10 +335,12 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 href="/profile"
                 prefetch={true}
                 onClick={closeMobileMenu}
-                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
-                  isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-                }`}
-                style={{ transitionDelay: '300ms' }}
+                className="group flex items-center gap-6 py-5 border-b border-white/10"
+                style={{
+                  opacity: isMobileMenuOpen ? 1 : 0,
+                  transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-16px)',
+                  transition: 'opacity 200ms ease-out 220ms, transform 200ms ease-out 220ms',
+                }}
               >
                 <Icon name="UserCircleIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
                 <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
@@ -324,10 +352,12 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 href="/login"
                 prefetch={true}
                 onClick={closeMobileMenu}
-                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
-                  isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
-                }`}
-                style={{ transitionDelay: '300ms' }}
+                className="group flex items-center gap-6 py-5 border-b border-white/10"
+                style={{
+                  opacity: isMobileMenuOpen ? 1 : 0,
+                  transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-16px)',
+                  transition: 'opacity 200ms ease-out 220ms, transform 200ms ease-out 220ms',
+                }}
               >
                 <Icon name="UserCircleIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
                 <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
