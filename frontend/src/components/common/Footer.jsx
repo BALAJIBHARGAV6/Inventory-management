@@ -199,9 +199,9 @@ export default function Footer() {
               <div>
                 <h4 className="text-sm font-medium mb-6 uppercase tracking-[0.2em] text-neutral-300">Connect</h4>
                 <ul className="space-y-3 text-neutral-400 font-light">
-                  <li>inventorypredictor@gmail.com</li>
+                  <li className="break-all text-xs sm:text-sm md:text-base">inventorypredictor@gmail.com</li>
                   <li>+91 98765 43210</li>
-                  <li>Vijayawada, Andhra Pradesh</li>
+                  <li className="text-sm">Vijayawada, AP</li>
                   <li>India</li>
                 </ul>
               </div>

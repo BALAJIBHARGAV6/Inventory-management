@@ -219,11 +219,17 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 </div>
               </div>
 
+              {/* Modern Hamburger Menu Toggle */}
               <button
                 onClick={handleMobileMenuToggle}
-                className="flex lg:hidden items-center justify-center w-10 h-10 text-text-primary hover:text-accent transition-micro rounded-md hover:bg-muted"
+                className="flex lg:hidden items-center justify-center w-10 h-10 text-text-primary hover:text-accent transition-micro rounded-md hover:bg-muted relative"
+                aria-label="Toggle menu"
               >
-                <Icon name={isMobileMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={24} />
+                <div className="w-6 h-5 flex flex-col justify-between items-center">
+                  <span className={`w-6 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                  <span className={`w-6 h-0.5 bg-current rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0 scale-0' : ''}`} />
+                  <span className={`w-6 h-0.5 bg-current rounded-full transition-all duration-300 origin-center ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+                </div>
               </button>
             </div>
           </div>
@@ -247,12 +253,20 @@ export default function Header({ onSearchSubmit, onCartClick }) {
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'
         }`}>
           {/* Close Button */}
-          <div className="flex justify-end p-6">
+          <div className="flex justify-end p-4 sm:p-6">
             <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-colors"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-all duration-300 hover:rotate-90 active:scale-90"
+              aria-label="Close menu"
             >
-              <Icon name="XMarkIcon" size={32} />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
 
