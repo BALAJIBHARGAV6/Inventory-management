@@ -230,55 +230,47 @@ export default function Header({ onSearchSubmit, onCartClick }) {
         </div>
       </header>
 
-      {/* Full Screen Mobile Menu Overlay */}
+      {/* Full Screen Mobile Menu Overlay with Glassmorphism */}
       <div
         className={`fixed inset-0 z-[200] lg:hidden transition-all duration-500 ${
           isMobileMenuOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
         }`}
       >
-        {/* Backdrop with glassmorphism */}
+        {/* Backdrop with glassmorphism effect */}
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/80 backdrop-blur-2xl"
-          onClick={handleMobileMenuToggle}
+          className="absolute inset-0 bg-black/70 backdrop-blur-xl"
+          onClick={() => setIsMobileMenuOpen(false)}
         />
         
-        {/* Menu Content with glassmorphism card */}
+        {/* Menu Content */}
         <div className={`relative h-full flex flex-col transition-all duration-500 delay-100 ${
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'
         }`}>
-          {/* Close Button - Fixed position */}
-          <div className="absolute top-4 right-4 z-50">
+          {/* Close Button */}
+          <div className="flex justify-end p-6">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsMobileMenuOpen(false);
-              }}
-              className="w-14 h-14 flex items-center justify-center text-white bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 transition-all duration-300 hover:scale-110 active:scale-95"
-              aria-label="Close menu"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-colors"
             >
-              <Icon name="XMarkIcon" size={28} />
+              <Icon name="XMarkIcon" size={32} />
             </button>
           </div>
 
-
           {/* Navigation Links */}
-          <nav className="flex-1 flex flex-col justify-center px-6 sm:px-8 mt-8">
+          <nav className="flex-1 flex flex-col justify-center px-8 -mt-20">
             {navigationItems?.map((item, index) => (
               <Link
                 key={item?.path}
                 href={item?.path}
                 prefetch={true}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`group flex items-center gap-5 py-4 px-4 mb-2 rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 transition-all duration-300 ${
+                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
                 style={{ transitionDelay: `${150 + index * 50}ms` }}
               >
-                <div className="w-12 h-12 flex items-center justify-center bg-white/10 rounded-xl">
-                  <Icon name={item?.icon} size={24} className="text-white/80 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xl sm:text-2xl font-light text-white tracking-wide group-hover:translate-x-1 transition-transform">
+                <Icon name={item?.icon} size={28} className="text-white/60 group-hover:text-white transition-colors" />
+                <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
                   {item?.label}
                 </span>
               </Link>
@@ -287,22 +279,20 @@ export default function Header({ onSearchSubmit, onCartClick }) {
               href="/shopping-cart"
               prefetch={true}
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`group flex items-center gap-5 py-4 px-4 mb-2 rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 transition-all duration-300 ${
+              className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                 isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
               }`}
               style={{ transitionDelay: '250ms' }}
             >
-              <div className="w-12 h-12 flex items-center justify-center bg-white/10 rounded-xl relative">
-                <Icon name="ShoppingCartIcon" size={24} className="text-white/80 group-hover:text-white transition-colors" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-[20px] px-1 text-xs font-bold text-black bg-white rounded-full">
-                    {cartCount}
-                  </span>
-                )}
-              </div>
-              <span className="text-xl sm:text-2xl font-light text-white tracking-wide group-hover:translate-x-1 transition-transform">
+              <Icon name="ShoppingCartIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
+              <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
                 Cart
               </span>
+              {cartCount > 0 && (
+                <span className="ml-auto flex items-center justify-center min-w-[32px] h-[32px] px-2 text-sm font-semibold text-black bg-white rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </Link>
             
             {/* Profile Link in Mobile Menu */}
@@ -311,17 +301,13 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 href="/profile"
                 prefetch={true}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`group flex items-center gap-5 py-4 px-4 mb-2 rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 transition-all duration-300 ${
+                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
                 style={{ transitionDelay: '300ms' }}
               >
-                <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-primary to-primary/70 rounded-xl">
-                  <span className="text-white font-bold text-lg">
-                    {profile?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
-                  </span>
-                </div>
-                <span className="text-xl sm:text-2xl font-light text-white tracking-wide group-hover:translate-x-1 transition-transform">
+                <Icon name="UserCircleIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
+                <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
                   My Profile
                 </span>
               </Link>
@@ -330,15 +316,13 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 href="/login"
                 prefetch={true}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`group flex items-center gap-5 py-4 px-4 mb-2 rounded-2xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 transition-all duration-300 ${
+                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
                 style={{ transitionDelay: '300ms' }}
               >
-                <div className="w-12 h-12 flex items-center justify-center bg-white/10 rounded-xl">
-                  <Icon name="UserCircleIcon" size={24} className="text-white/80 group-hover:text-white transition-colors" />
-                </div>
-                <span className="text-xl sm:text-2xl font-light text-white tracking-wide group-hover:translate-x-1 transition-transform">
+                <Icon name="UserCircleIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
+                <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
                   Sign In
                 </span>
               </Link>
@@ -346,32 +330,32 @@ export default function Header({ onSearchSubmit, onCartClick }) {
           </nav>
 
           {/* Bottom Actions */}
-          <div className="px-6 sm:px-8 pb-8">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <div className="px-8 pb-12">
+            <div className="flex items-center justify-between pt-6 border-t border-white/10">
               <button
                 onClick={() => { toggleTheme(); setIsMobileMenuOpen(false); }}
-                className="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+                className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
               >
-                <Icon name={theme === 'dark' ? 'SunIcon' : 'MoonIcon'} size={20} />
-                <span className="text-sm font-medium">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+                <Icon name={theme === 'dark' ? 'SunIcon' : 'MoonIcon'} size={24} />
+                <span className="text-lg font-light">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
               </button>
               
               {isAuthenticated ? (
                 <button
                   onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
-                  className="flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all"
+                  className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
                 >
-                  <Icon name="ArrowRightOnRectangleIcon" size={20} />
-                  <span className="text-sm font-medium">Logout</span>
+                  <Icon name="ArrowRightOnRectangleIcon" size={24} />
+                  <span className="text-lg font-light">Logout</span>
                 </button>
               ) : (
                 <Link
                   href="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all"
+                  className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
                 >
-                  <Icon name="UserCircleIcon" size={20} />
-                  <span className="text-sm font-medium">Sign In</span>
+                  <Icon name="UserCircleIcon" size={24} />
+                  <span className="text-lg font-light">Sign In</span>
                 </Link>
               )}
             </div>

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
-import Breadcrumb from '@/components/common/Breadcrumb';
 import ImageGallery from './ImageGallery';
 import ProductInfo from './ProductInfo';
 import AddToCartSection from './AddToCartSection';
@@ -13,12 +12,6 @@ import Icon from '@/components/ui/AppIcon';
 export default function ProductDetailsInteractive({ product }) {
   const router = useRouter();
   const [cartCount, setCartCount] = useState(3);
-
-  const breadcrumbItems = [
-    { label: 'Products', path: '/product-listing' },
-    { label: product?.category || 'Products', path: `/product-listing?category=${product?.category}` },
-    { label: product?.name || 'Product Details', path: '#' },
-  ];
 
   const handleAddToCart = async (product, quantity) => {
     console.log('Adding to cart:', product.name, 'Qty:', quantity);
@@ -29,13 +22,6 @@ export default function ProductDetailsInteractive({ product }) {
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartCount} />
       <main className="pt-16 md:pt-24">
-        {/* Breadcrumb Section */}
-        <div className="bg-muted/30 py-2 sm:py-3 border-b border-border">
-          <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-            <Breadcrumb items={breadcrumbItems} />
-          </div>
-        </div>
-
         <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-8 lg:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
             {/* Image Gallery */}
