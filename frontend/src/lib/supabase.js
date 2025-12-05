@@ -20,8 +20,58 @@ let supabaseClient = null;
 
 if (isSupabaseConfigured) {
   try {
-    supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        // Handle auth errors gracefully
+        onAuthStateChange: (event, session) => {
+          if (event === 'TOKEN_REFRESHED') {
+            console.log('Token refreshed successfully');
+          }
+        },
+      },
+      global: {
+        fetch: (...args) => {
+          return fetch(...args).catch(err => {
+            // Silently handle network errors for auth refresh
+            if (err.message === 'Failed to fetch') {
+              console.warn('Network error during Supabase request - continuing offline');
+              return new Response(JSON.stringify({ error: 'Network error' }), { status: 503 });
+            }
+            throw err;
+          });
+        },
+      },
+    });
     console.log('Supabase client created successfully');
+    
+    // Clear corrupted sessions on startup
+    if (typeof window !== 'undefined') {
+      try {
+        const storedSession = localStorage.getItem('sb-' + supabaseUrl.split('//')[1]?.split('.')[0] + '-auth-token');
+        if (storedSession) {
+          const parsed = JSON.parse(storedSession);
+          // Check if session is corrupted or expired
+          if (!parsed?.access_token || !parsed?.refresh_token) {
+            console.warn('Clearing corrupted Supabase session');
+            Object.keys(localStorage).forEach(key => {
+              if (key.startsWith('sb-') || key.includes('supabase')) {
+                localStorage.removeItem(key);
+              }
+            });
+          }
+        }
+      } catch (e) {
+        // Clear on parse error
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('sb-') || key.includes('supabase')) {
+            localStorage.removeItem(key);
+          }
+        });
+      }
+    }
   } catch (error) {
     console.error('Error creating Supabase client:', error);
     supabaseClient = null;
