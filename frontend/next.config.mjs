@@ -3,6 +3,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   images: {
     remotePatterns: [
       {
@@ -11,15 +14,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'images.pexels.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.pixabay.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.rocket.new',
+        hostname: 'via.placeholder.com',
       },
     ],
   },
@@ -31,6 +26,11 @@ const nextConfig = {
         permanent: false,
       },
     ];
+  },
+  // Optimize for faster navigation
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
 };
 

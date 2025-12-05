@@ -114,20 +114,84 @@ export default function Footer() {
               <div>
                 <h4 className="text-sm font-medium mb-6 uppercase tracking-[0.2em] text-neutral-300">Support</h4>
                 <ul className="space-y-3">
-                  <li><Link href="/contact" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">Contact Us</Link></li>
-                  <li><Link href="/faq" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">FAQ</Link></li>
-                  <li><Link href="/shipping-returns" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">Shipping & Returns</Link></li>
-                  <li><Link href="/faq" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">Help Center</Link></li>
+                  <li>
+                    <Link 
+                      href="/contact" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      Contact Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/faq" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      FAQ
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/shipping-returns" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      Shipping & Returns
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/faq" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      Help Center
+                    </Link>
+                  </li>
                 </ul>
               </div>
 
               <div>
                 <h4 className="text-sm font-medium mb-6 uppercase tracking-[0.2em] text-neutral-300">Legal</h4>
                 <ul className="space-y-3">
-                  <li><Link href="/about" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">About Us</Link></li>
-                  <li><Link href="/privacy-policy" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">Privacy Policy</Link></li>
-                  <li><Link href="/terms-of-service" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">Terms of Service</Link></li>
-                  <li><Link href="/contact" prefetch={true} className="text-neutral-400 hover:text-white transition-colors font-light">Support</Link></li>
+                  <li>
+                    <Link 
+                      href="/about" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/privacy-policy" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/terms-of-service" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      Terms of Service
+                    </Link>
+                  </li>
+                  <li>
+                    <Link 
+                      href="/contact" 
+                      prefetch={true} 
+                      className="text-neutral-400 hover:text-white transition-all duration-300 font-light hover:translate-x-1 inline-block"
+                    >
+                      Support
+                    </Link>
+                  </li>
                 </ul>
               </div>
 
@@ -150,8 +214,20 @@ export default function Footer() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-8 text-sm text-neutral-500">
                 <span>© {new Date().getFullYear()} InventoryPredictor</span>
-                <Link href="/privacy-policy" prefetch={true} className="hover:text-white transition-colors">Privacy Policy</Link>
-                <Link href="/terms-of-service" prefetch={true} className="hover:text-white transition-colors">Terms of Service</Link>
+                <Link 
+                  href="/privacy-policy" 
+                  prefetch={true} 
+                  className="hover:text-white transition-all duration-300 hover:scale-105"
+                >
+                  Privacy Policy
+                </Link>
+                <Link 
+                  href="/terms-of-service" 
+                  prefetch={true} 
+                  className="hover:text-white transition-all duration-300 hover:scale-105"
+                >
+                  Terms of Service
+                </Link>
               </div>
               
               <div className="flex items-center gap-4">
