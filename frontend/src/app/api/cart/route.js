@@ -1,13 +1,23 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Create Supabase client lazily to avoid build-time errors
+const getSupabase = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    return null;
+  }
+  
+  return createClient(url, key);
+};
 
 export async function GET(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    
     const userId = request.headers.get('x-user-id');
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -25,6 +35,9 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    
     const { userId, productId, quantity = 1 } = await request.json();
     if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -60,6 +73,9 @@ export async function POST(request) {
 
 export async function PUT(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    
     const { cartItemId, quantity } = await request.json();
 
     const { data, error } = await supabase
@@ -78,6 +94,9 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    
     const { searchParams } = new URL(request.url);
     const cartItemId = searchParams.get('id');
     const userId = searchParams.get('userId');
