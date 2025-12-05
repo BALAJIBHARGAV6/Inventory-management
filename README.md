@@ -1,15 +1,64 @@
-# 🚀 InventoryPredictor
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Fastify-4.0-white?style=for-the-badge&logo=fastify" alt="Fastify" />
+  <img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase" alt="Supabase" />
+  <img src="https://img.shields.io/badge/Groq-LLaMA_3.1-FF6B35?style=for-the-badge" alt="Groq AI" />
+  <img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css" alt="TailwindCSS" />
+</p>
 
-> **AI-Powered E-Commerce Platform with Intelligent Inventory Forecasting**
+<h1 align="center">🚀 InventoryPredictor</h1>
 
-A full-stack e-commerce application similar to Amazon/Flipkart, built for the Indian market with **Groq AI-powered demand forecasting** and real-time inventory management.
+<p align="center">
+  <strong>AI-Powered Inventory Management System with E-Commerce Platform</strong>
+</p>
 
-![Project Status](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![Fastify](https://img.shields.io/badge/Fastify-4-white)
-![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)
-![Groq](https://img.shields.io/badge/Groq-LLaMA_3.1-orange)
+<p align="center">
+  <em>B.Tech Final Year Project 2025-26</em>
+</p>
+
+<p align="center">
+  <a href="#-features">Features</a> •
+  <a href="#-demo">Demo</a> •
+  <a href="#-tech-stack">Tech Stack</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-deployment">Deployment</a> •
+  <a href="#-team">Team</a>
+</p>
+
+---
+
+## 📋 Overview
+
+**InventoryPredictor** is a comprehensive full-stack inventory management system that combines a modern e-commerce platform with AI-powered demand forecasting. Built for the Indian market, it helps businesses manage inventory efficiently by predicting future demand patterns, automating reorder processes, and providing real-time analytics.
+
+### 🎯 Key Highlights
+
+- **AI-Powered Forecasting** - Predict demand using Groq's LLaMA 3.1 70B model
+- **Real-time Inventory Tracking** - Monitor stock levels with automated alerts
+- **E-Commerce Platform** - Full-featured online shopping experience
+- **Analytics Dashboard** - Comprehensive sales and inventory insights
+- **Mobile Responsive** - Optimized for all device sizes
+
+---
+
+## 🌐 Demo
+
+### Live URLs
+| Platform | URL |
+|----------|-----|
+| **Frontend** | [https://inventory-management-ecommerce.vercel.app](https://inventory-management-ecommerce.vercel.app) |
+| **Backend API** | [https://inventory-management-production-4d6b.up.railway.app](https://inventory-management-production-4d6b.up.railway.app) |
+
+### Demo Pages
+| Page | Description |
+|------|-------------|
+| 🏠 `/homepage` | Landing page with featured products |
+| 🛍️ `/product-listing` | Browse all products with filters |
+| 📦 `/product-details/[id]` | Detailed product view |
+| 🛒 `/shopping-cart` | Shopping cart management |
+| 👤 `/profile` | User profile & order history |
+| ℹ️ `/about` | About the project & team |
+| 📊 `/admin` | Admin dashboard with AI forecasting |
 
 ---
 
@@ -703,41 +752,42 @@ Track these KPIs to measure system effectiveness:
 
 ---
 
-## 🤝 Contributing
+## 👥 Team
 
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+<table>
+  <tr>
+    <td align="center"><strong>Pragathi</strong><br/><em>Full Stack Development</em></td>
+    <td align="center"><strong>Meghana</strong><br/><em>Frontend Development</em></td>
+    <td align="center"><strong>Sravani</strong><br/><em>Backend Development</em></td>
+    <td align="center"><strong>Prem Sai</strong><br/><em>Database & API</em></td>
+    <td align="center"><strong>Ajay</strong><br/><em>UI/UX Design</em></td>
+  </tr>
+</table>
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🆘 Support
-
-For questions or issues:
-
-- **GitHub Issues**: [Open an issue](https://github.com/your-username/inventory-predictor/issues)
-- **Email**: support@yourcompany.com
-- **Documentation**: Check the `/docs` folder for detailed guides
+This project is developed as a **B.Tech Final Year Project** for academic purposes.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [Vercel Commerce](https://github.com/vercel/commerce) for the e-commerce template
-- [OpenAI](https://openai.com/) for GPT-4 AI capabilities
-- [Supabase](https://supabase.com/) for the excellent PostgreSQL backend
-- The open-source community for amazing tools and libraries
+- [Next.js](https://nextjs.org/) - React Framework
+- [Supabase](https://supabase.com/) - Backend as a Service
+- [Groq](https://groq.com/) - AI Inference Platform
+- [TailwindCSS](https://tailwindcss.com/) - CSS Framework
+- [Vercel](https://vercel.com/) - Frontend Hosting
+- [Railway](https://railway.app/) - Backend Hosting
 
 ---
 
-**Built with ❤️ for the Indian E-Commerce Market**
+<p align="center">
+  <strong>Built with ❤️ as a B.Tech Final Year Project 2025-26</strong>
+</p>
+
+<p align="center">
+  <a href="https://inventory-management-ecommerce.vercel.app">View Live Demo</a> •
+  <a href="https://github.com/BALAJIBHARGAV6/Inventory-management">GitHub Repository</a>
+</p>
