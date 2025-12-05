@@ -90,6 +90,10 @@ export default function Header({ onSearchSubmit, onCartClick }) {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   const handleCartClick = () => {
     if (onCartClick) {
       onCartClick();
@@ -245,7 +249,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
         {/* Backdrop with glassmorphism effect */}
         <div 
           className="absolute inset-0 bg-black/70 backdrop-blur-xl"
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
         />
         
         {/* Menu Content */}
@@ -256,16 +260,13 @@ export default function Header({ onSearchSubmit, onCartClick }) {
           <div className="flex justify-end p-4 sm:p-6">
             <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsMobileMenuOpen(false);
-              }}
-              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-all duration-300 hover:rotate-90 active:scale-90"
+              onClick={closeMobileMenu}
+              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-all duration-300 hover:rotate-90 active:scale-90 z-[210]"
               aria-label="Close menu"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
             </button>
           </div>
@@ -277,7 +278,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 key={item?.path}
                 href={item?.path}
                 prefetch={true}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
                 className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
@@ -292,7 +293,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
             <Link
               href="/shopping-cart"
               prefetch={true}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={closeMobileMenu}
               className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                 isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
               }`}
@@ -314,7 +315,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
               <Link
                 href="/profile"
                 prefetch={true}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
                 className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
@@ -329,7 +330,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
               <Link
                 href="/login"
                 prefetch={true}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={closeMobileMenu}
                 className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
                   isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                 }`}
@@ -347,7 +348,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
           <div className="px-8 pb-12">
             <div className="flex items-center justify-between pt-6 border-t border-white/10">
               <button
-                onClick={() => { toggleTheme(); setIsMobileMenuOpen(false); }}
+                onClick={() => { toggleTheme(); closeMobileMenu(); }}
                 className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
               >
                 <Icon name={theme === 'dark' ? 'SunIcon' : 'MoonIcon'} size={24} />
@@ -356,7 +357,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
               
               {isAuthenticated ? (
                 <button
-                  onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
+                  onClick={() => { handleLogout(); closeMobileMenu(); }}
                   className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
                 >
                   <Icon name="ArrowRightOnRectangleIcon" size={24} />
@@ -365,7 +366,7 @@ export default function Header({ onSearchSubmit, onCartClick }) {
               ) : (
                 <Link
                   href="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                   className="flex items-center gap-3 text-white/70 hover:text-white transition-colors"
                 >
                   <Icon name="UserCircleIcon" size={24} />
