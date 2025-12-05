@@ -167,86 +167,55 @@ export default async function ordersRoutes(fastify: FastifyInstance): Promise<vo
     const { status, limit = '50', offset = '0' } = request.query || {};
 
     try {
-      // Always return demo order for admin approval testing
-      const demoOrder = {
-        id: '1',
-        order_number: 'ORD23857328',
-        status: 'pending',
-        total: 159900,
-        subtotal: 159900,
-        payment_method: 'Cash on Delivery',
-        payment_status: 'pending',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        shipping_address: {
-          full_name: 'Rajesh Kumar',
-          address_line1: '123, MG Road, Labbipet',
-          city: 'Vijayawada',
-          state: 'Andhra Pradesh',
-          postal_code: '520010',
-          phone: '+91 9876543210'
-        },
-        customer_email: 'rajesh.kumar@example.com',
-        customer_phone: '+91 9876543210',
-        order_items: [
-          {
-            id: '1',
-            product_id: '6',
-            product_name: 'Apple iPhone 15 Pro Max',
-            quantity: 1,
-            unit_price: 159900,
-            total_price: 159900,
-            products: {
-              name: 'Apple iPhone 15 Pro Max',
-              price: 159900,
-              thumbnail: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400'
-            }
-          }
-        ],
-        notes: 'Please handle with care. Customer requested delivery between 10 AM - 2 PM.',
-        special_instructions: 'Call before delivery'
-      };
-
       if (supabase) {
-        try {
-          let query = supabase
-            .from('orders')
-            .select(`
-              *,
-              order_items (
-                *,
-                products (
-                  name,
-                  price,
-                  thumbnail
-                )
-              )
-            `, { count: 'exact' })
-            .order('created_at', { ascending: false });
-
-          if (status) {
-            query = query.eq('status', status);
-          }
-
-          query = query.range(parseInt(offset), parseInt(offset) + parseInt(limit) - 1);
-
-          const { data, error, count } = await query;
-          
-          if (!error && data && data.length > 0) {
-            // Return real orders if they exist
-            return { orders: data, total: count || 0 };
-          }
-        } catch (error) {
-          console.error('Error fetching real orders:', error);
+        console.log('Fetching all orders from Supabase...');
+        
+        // First, let's do a simple query to check if orders exist
+        const { data: simpleCheck, error: checkError } = await supabase
+          .from('orders')
+          .select('id, order_number, status, total, created_at')
+          .limit(10);
+        
+        console.log('Simple orders check:', { count: simpleCheck?.length, error: checkError?.message });
+        if (simpleCheck && simpleCheck.length > 0) {
+          console.log('Sample orders:', simpleCheck.slice(0, 3));
         }
+        
+        let query = supabase
+          .from('orders')
+          .select(`
+            *,
+            order_items (
+              *,
+              products (
+                name,
+                price,
+                thumbnail
+              )
+            )
+          `, { count: 'exact' })
+          .order('created_at', { ascending: false });
+
+        if (status) {
+          query = query.eq('status', status);
+        }
+
+        query = query.range(parseInt(offset), parseInt(offset) + parseInt(limit) - 1);
+
+        const { data, error, count } = await query;
+        
+        console.log('Full orders query result:', { dataCount: data?.length, error: error?.message, totalCount: count });
+        
+        if (error) throw error;
+
+        return { orders: data || [], total: count || 0 };
       }
 
-      // Return demo order for admin testing
-      return {
-        orders: [demoOrder],
-        total: 1
-      };
+      // Return empty if no database connection
+      console.log('No Supabase connection');
+      return { orders: [], total: 0 };
     } catch (error: Error | any) {
+      console.error('Error fetching orders:', error);
       return reply.status(500).send({ error: error.message });
     }
   });
@@ -254,19 +223,45 @@ export default async function ordersRoutes(fastify: FastifyInstance): Promise<vo
   // Admin: Get order statistics
   fastify.get('/admin/stats', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      // Return mock stats for demo
+      if (supabase) {
+        const { data: orders, error } = await supabase
+          .from('orders')
+          .select('status, total, created_at');
+
+        if (error) throw error;
+
+        const today = new Date().toISOString().split('T')[0];
+        const todayOrders = orders?.filter(o => o.created_at.startsWith(today)) || [];
+
+        const stats = {
+          total: orders?.length || 0,
+          pending: orders?.filter(o => o.status === 'pending').length || 0,
+          approved: orders?.filter(o => o.status === 'approved').length || 0,
+          processing: orders?.filter(o => o.status === 'processing').length || 0,
+          shipped: orders?.filter(o => o.status === 'shipped').length || 0,
+          delivered: orders?.filter(o => o.status === 'delivered').length || 0,
+          cancelled: orders?.filter(o => o.status === 'cancelled').length || 0,
+          totalRevenue: orders?.reduce((sum, o) => sum + o.total, 0) || 0,
+          averageOrderValue: orders?.length ? Math.round((orders.reduce((sum, o) => sum + o.total, 0) / orders.length)) : 0,
+          todayOrders: todayOrders.length,
+          todayRevenue: todayOrders.reduce((sum, o) => sum + o.total, 0) || 0
+        };
+
+        return stats;
+      }
+
       return {
-        total: 1,
-        pending: 1,
+        total: 0,
+        pending: 0,
         approved: 0,
         processing: 0,
         shipped: 0,
         delivered: 0,
         cancelled: 0,
-        totalRevenue: 159900,
-        averageOrderValue: 159900,
-        todayOrders: 1,
-        todayRevenue: 159900
+        totalRevenue: 0,
+        averageOrderValue: 0,
+        todayOrders: 0,
+        todayRevenue: 0
       };
     } catch (error: Error | any) {
       return reply.status(500).send({ error: error.message });
@@ -325,11 +320,7 @@ export default async function ordersRoutes(fastify: FastifyInstance): Promise<vo
       // Update order status
       const { data: updatedOrder, error: updateError } = await supabase
         .from('orders')
-        .update({
-          status: 'approved',
-          admin_notes: adminNotes,
-          updated_at: new Date().toISOString()
-        })
+        .update({ status: 'approved' })
         .eq('id', id)
         .select()
         .single();
@@ -357,17 +348,11 @@ export default async function ordersRoutes(fastify: FastifyInstance): Promise<vo
   // Admin: Reject/Cancel order
   fastify.post('/:id/reject', async (request: FastifyRequest<{ Params: IdParams; Body: { adminNotes?: string; reason?: string } }>, reply: FastifyReply) => {
     const { id } = request.params;
-    const { adminNotes, reason } = request.body || {};
 
     try {
       const { data, error } = await supabase
         .from('orders')
-        .update({
-          status: 'cancelled',
-          admin_notes: adminNotes,
-          cancellation_reason: reason,
-          updated_at: new Date().toISOString()
-        })
+        .update({ status: 'cancelled' })
         .eq('id', id)
         .select()
         .single();

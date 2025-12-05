@@ -3,6 +3,106 @@ import { supabase } from '../config/database';
 import { groqAIService } from '../services/groq-ai.service';
 import { productRecommendationsService } from '../services/product-recommendations.service';
 
+// AI Analytics Helper Functions
+function calculateHealthScore(pending: number, approved: number, cancelled: number, criticalStock: number): number {
+  let score = 100;
+  
+  // Deduct for pending orders (need attention)
+  score -= Math.min(pending * 5, 20);
+  
+  // Deduct for cancelled orders (lost revenue)
+  score -= Math.min(cancelled * 10, 30);
+  
+  // Deduct for critical stock items
+  score -= Math.min(criticalStock * 8, 25);
+  
+  // Bonus for approved orders
+  score += Math.min(approved * 2, 15);
+  
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+function generateOrderAnalysis(pending: number, approved: number, cancelled: number): string {
+  const total = pending + approved + cancelled;
+  if (total === 0) return "No orders yet. Start marketing to attract customers!";
+  
+  if (pending > approved) {
+    return `⚠️ ${pending} orders awaiting approval. Process them quickly to improve customer satisfaction.`;
+  }
+  if (cancelled > approved) {
+    return `🔴 High cancellation rate detected. Review pricing and product availability.`;
+  }
+  if (approved > pending + cancelled) {
+    return `✅ Great job! Most orders are being fulfilled successfully.`;
+  }
+  return `📊 ${total} total orders processed. Keep monitoring for trends.`;
+}
+
+function generateRevenueAnalysis(total: number, avg: number, today: number): string {
+  if (total === 0) return "Start selling to track revenue metrics!";
+  
+  if (today > avg) {
+    return `🚀 Today's performance is above average! Revenue: ₹${today.toLocaleString('en-IN')}`;
+  }
+  if (avg > 100000) {
+    return `💎 Premium segment performing well with ₹${Math.round(avg).toLocaleString('en-IN')} average order value.`;
+  }
+  return `📈 Total revenue: ₹${total.toLocaleString('en-IN')}. Focus on upselling to increase AOV.`;
+}
+
+function generateInventoryAnalysis(critical: number, low: number, total: number): string {
+  if (critical > 0) {
+    return `🚨 URGENT: ${critical} products critically low. Restock immediately to avoid stockouts!`;
+  }
+  if (low > 0) {
+    return `⚠️ ${low} products below reorder level. Plan restocking within this week.`;
+  }
+  const healthyPercent = ((total - critical - low) / total * 100).toFixed(0);
+  return `✅ Inventory health: ${healthyPercent}% of products well-stocked.`;
+}
+
+function generateAIRecommendations(
+  pending: number, 
+  criticalProducts: any[], 
+  lowProducts: any[], 
+  avgOrderValue: number,
+  totalRevenue: number
+): string[] {
+  const recommendations: string[] = [];
+  
+  // Order recommendations
+  if (pending > 3) {
+    recommendations.push(`🎯 Process ${pending} pending orders to improve fulfillment rate and customer satisfaction`);
+  }
+  
+  // Inventory recommendations
+  if (criticalProducts.length > 0) {
+    const productNames = criticalProducts.slice(0, 2).map(p => p.name).join(', ');
+    recommendations.push(`🚨 Urgent restock needed: ${productNames} - critically low inventory`);
+  }
+  
+  if (lowProducts.length > 0) {
+    recommendations.push(`📦 Plan restocking for ${lowProducts.length} products approaching reorder level`);
+  }
+  
+  // Revenue recommendations
+  if (avgOrderValue < 50000) {
+    recommendations.push(`💡 Consider bundling products to increase average order value from ₹${Math.round(avgOrderValue).toLocaleString('en-IN')}`);
+  }
+  
+  if (totalRevenue > 500000) {
+    recommendations.push(`🌟 Strong revenue performance! Consider expanding product range in top categories`);
+  }
+  
+  // Default recommendations
+  if (recommendations.length === 0) {
+    recommendations.push(`📊 Monitor daily sales trends to identify growth opportunities`);
+    recommendations.push(`🎯 Focus on customer retention through quality service`);
+  }
+  
+  return recommendations.slice(0, 5);
+}
+
 export default async function forecastRoutes(fastify: FastifyInstance) {
   // Generate AI forecast for inventory
   fastify.post('/generate', async (request: any, reply: any) => {
@@ -224,6 +324,112 @@ export default async function forecastRoutes(fastify: FastifyInstance) {
 
       return { predictions: data || [] };
     } catch (error: any) {
+      return reply.status(500).send({ error: error.message });
+    }
+  });
+
+  // AI-powered business analytics insights
+  fastify.get('/ai-analytics', async (_request: any, reply: any) => {
+    try {
+      // Get all orders
+      const { data: orders } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      // Get all products
+      const { data: products } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true);
+
+      if (!orders || !products) {
+        return { insights: null, error: 'No data available' };
+      }
+
+      // Calculate real metrics
+      const totalOrders = orders.length;
+      const pendingOrders = orders.filter(o => o.status === 'pending').length;
+      const approvedOrders = orders.filter(o => o.status === 'approved').length;
+      const cancelledOrders = orders.filter(o => o.status === 'cancelled').length;
+      const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+      const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+      // Today's metrics
+      const today = new Date().toISOString().split('T')[0];
+      const todayOrders = orders.filter(o => o.created_at?.startsWith(today));
+      const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+      // Inventory metrics
+      const totalProducts = products.length;
+      const lowStockProducts = products.filter(p => p.stock_quantity > 5 && p.stock_quantity <= (p.reorder_level || 10));
+      const criticalStockProducts = products.filter(p => p.stock_quantity <= 5 && p.stock_quantity > 0);
+      const outOfStockProducts = products.filter(p => p.stock_quantity === 0);
+      const totalInventoryValue = products.reduce((sum, p) => sum + (p.price * p.stock_quantity), 0);
+
+      // Top selling categories (based on orders)
+      const topProducts = products.sort((a, b) => a.stock_quantity - b.stock_quantity).slice(0, 5);
+
+      // Generate AI insights
+      const insights = {
+        summary: {
+          headline: totalOrders > 0 
+            ? `Your store has processed ${totalOrders} orders with ₹${totalRevenue.toLocaleString('en-IN')} in revenue`
+            : 'Start tracking your business performance with AI-powered insights',
+          health_score: calculateHealthScore(pendingOrders, approvedOrders, cancelledOrders, criticalStockProducts.length),
+          trend: todayOrders.length > 0 ? 'positive' : 'neutral'
+        },
+        
+        order_insights: {
+          total: totalOrders,
+          pending: pendingOrders,
+          approved: approvedOrders,
+          cancelled: cancelledOrders,
+          conversion_rate: totalOrders > 0 ? ((approvedOrders / totalOrders) * 100).toFixed(1) : 0,
+          cancellation_rate: totalOrders > 0 ? ((cancelledOrders / totalOrders) * 100).toFixed(1) : 0,
+          analysis: generateOrderAnalysis(pendingOrders, approvedOrders, cancelledOrders)
+        },
+
+        revenue_insights: {
+          total_revenue: totalRevenue,
+          avg_order_value: Math.round(avgOrderValue),
+          today_revenue: todayRevenue,
+          today_orders: todayOrders.length,
+          projected_monthly: Math.round(todayRevenue * 30),
+          analysis: generateRevenueAnalysis(totalRevenue, avgOrderValue, todayRevenue)
+        },
+
+        inventory_insights: {
+          total_products: totalProducts,
+          total_value: totalInventoryValue,
+          critical_stock: criticalStockProducts.length,
+          low_stock: lowStockProducts.length,
+          out_of_stock: outOfStockProducts.length,
+          healthy_stock: totalProducts - criticalStockProducts.length - lowStockProducts.length - outOfStockProducts.length,
+          critical_products: criticalStockProducts.map(p => ({ name: p.name, stock: p.stock_quantity, value: p.price })),
+          analysis: generateInventoryAnalysis(criticalStockProducts.length, lowStockProducts.length, totalProducts)
+        },
+
+        ai_recommendations: generateAIRecommendations(
+          pendingOrders, 
+          criticalStockProducts, 
+          lowStockProducts, 
+          avgOrderValue,
+          totalRevenue
+        ),
+
+        performance_metrics: {
+          order_fulfillment_rate: totalOrders > 0 ? (((approvedOrders) / totalOrders) * 100).toFixed(1) : 0,
+          inventory_health: ((totalProducts - criticalStockProducts.length - outOfStockProducts.length) / totalProducts * 100).toFixed(1),
+          revenue_per_product: totalProducts > 0 ? Math.round(totalRevenue / totalProducts) : 0
+        },
+
+        generated_at: new Date().toISOString()
+      };
+
+      return { insights };
+    } catch (error: any) {
+      console.error('AI Analytics error:', error);
       return reply.status(500).send({ error: error.message });
     }
   });

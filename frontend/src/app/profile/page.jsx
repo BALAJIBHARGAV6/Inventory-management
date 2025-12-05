@@ -122,9 +122,9 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="pt-20 pb-12 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold text-text-primary mb-6">My Account</h1>
+      <main className="pt-24 md:pt-28 pb-12 px-4 md:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto animate-fade-in">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-6">My Account</h1>
 
           {/* Tabs */}
           <div className="flex gap-4 border-b border-border mb-6">

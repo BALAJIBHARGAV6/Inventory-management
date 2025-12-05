@@ -132,40 +132,6 @@ export default function Header({ onSearchSubmit, onCartClick }) {
 
             <div className="flex items-center gap-2">
               <div className="hidden lg:flex items-center gap-2">
-                {isSearchExpanded ? (
-                  <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
-                    <div className="relative">
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e?.target?.value)}
-                        placeholder="Search products..."
-                        className="w-64 h-10 pl-10 pr-4 text-sm border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring transition-smooth"
-                      />
-                      <Icon
-                        name="MagnifyingGlassIcon"
-                        size={18}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleSearchToggle}
-                      className="flex items-center justify-center w-10 h-10 text-text-primary hover:text-accent transition-micro rounded-md hover:bg-muted"
-                    >
-                      <Icon name="XMarkIcon" size={20} />
-                    </button>
-                  </form>
-                ) : (
-                  <button
-                    onClick={handleSearchToggle}
-                    className="flex items-center justify-center w-10 h-10 text-text-primary hover:text-accent transition-micro rounded-md hover:bg-muted"
-                  >
-                    <Icon name="MagnifyingGlassIcon" size={20} />
-                  </button>
-                )}
-
                 <Link
                   href="/shopping-cart"
                   prefetch={true}

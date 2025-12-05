@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#0a0a0a',
 };
 
 export const metadata = {
@@ -15,41 +16,92 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning className="dark" data-theme="dark">
       <head>
+        <meta name="color-scheme" content="dark light" />
+        <meta name="theme-color" content="#0a0a0a" />
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              html { background-color: rgb(10, 10, 10); }
-              html.dark { background-color: rgb(10, 10, 10); }
-              html:not(.dark) { background-color: white; }
+              /* Critical CSS - Prevent white flash */
+              html {
+                background: #0a0a0a !important;
+                color-scheme: dark !important;
+              }
+              html.dark, html[data-theme="dark"] {
+                background: #0a0a0a !important;
+                --color-background: #0a0a0a;
+              }
+              body {
+                background: #0a0a0a !important;
+                margin: 0;
+                min-height: 100vh;
+              }
+              /* Disable transitions during load */
+              html:not(.loaded) * {
+                transition: none !important;
+                animation: none !important;
+              }
+              /* Loading state */
+              .page-loading {
+                opacity: 0;
+              }
+              html.loaded .page-loading {
+                opacity: 1;
+                transition: opacity 0.2s ease;
+              }
             `,
           }}
         />
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              try {
-                const theme = localStorage.getItem('theme') || 'dark';
-                if (theme === 'dark') {
-                  document.documentElement.classList.add('dark');
+              (function() {
+                var d = document.documentElement;
+                var b = document.body;
+                
+                // Set dark theme immediately
+                d.style.background = '#0a0a0a';
+                d.classList.add('dark');
+                d.setAttribute('data-theme', 'dark');
+                
+                // Apply to body when ready
+                if (b) b.style.background = '#0a0a0a';
+                
+                // Check saved preference
+                try {
+                  var t = localStorage.getItem('theme');
+                  if (t === 'light') {
+                    d.classList.remove('dark');
+                    d.classList.add('light');
+                    d.setAttribute('data-theme', 'light');
+                    d.style.background = '#ffffff';
+                    if (b) b.style.background = '#ffffff';
+                  }
+                } catch(e) {}
+                
+                // Mark loaded after DOM ready
+                if (document.readyState === 'complete') {
+                  d.classList.add('loaded');
                 } else {
-                  document.documentElement.classList.remove('dark');
+                  window.addEventListener('DOMContentLoaded', function() {
+                    requestAnimationFrame(function() {
+                      d.classList.add('loaded');
+                    });
+                  });
                 }
-              } catch (_) {
-                document.documentElement.classList.add('dark');
-              }
+              })();
             `,
           }}
         />
       </head>
-      <body className="min-h-screen bg-white dark:bg-neutral-900 font-body antialiased">
+      <body className="min-h-screen bg-background font-body antialiased page-loading">
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>
-              <div className="transition-opacity duration-300">
+              <main className="flex flex-col min-h-screen">
                 {children}
-              </div>
+              </main>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>

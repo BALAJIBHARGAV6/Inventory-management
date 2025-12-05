@@ -87,11 +87,11 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-16">
+      <main className="pt-20 md:pt-24">
         {/* Minimalist Hero Section */}
-        <section className="relative py-12 md:py-16 bg-white dark:bg-neutral-950">
+        <section className="relative py-8 md:py-12 bg-background">
           <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-thin text-neutral-900 dark:text-white mb-3 tracking-tight leading-none">

@@ -4,10 +4,14 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Icon from '@/components/ui/AppIcon';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export default function AdminPage() {
+  const { user, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [products, setProducts] = useState([]);
   const [inventory, setInventory] = useState([]);
@@ -20,6 +24,8 @@ export default function AdminPage() {
   const [productRecommendations, setProductRecommendations] = useState([]);
   const [orders, setOrders] = useState([]);
   const [orderStats, setOrderStats] = useState({ total: 0, pending: 0, approved: 0, totalRevenue: 0 });
+  const [aiInsights, setAiInsights] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
@@ -45,8 +51,32 @@ export default function AdminPage() {
     } else if (activeTab === 'orders') {
       fetchOrders();
       fetchOrderStats();
+    } else if (activeTab === 'analytics') {
+      fetchOrderStats();
+      fetchAIInsights();
     }
   }, [activeTab]);
+
+  const fetchAIInsights = async () => {
+    setAiLoading(true);
+    try {
+      console.log('Fetching AI insights...');
+      const res = await fetch(`${API_URL}/api/forecast/ai-analytics`);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      
+      const data = await res.json();
+      console.log('AI Insights:', data);
+      setAiInsights(data.insights);
+    } catch (err) {
+      console.error('Failed to fetch AI insights:', err);
+      setAiInsights(null);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -69,17 +99,8 @@ export default function AdminPage() {
       }
     } catch (err) {
       console.error('Failed to fetch products:', err);
-      // Set some mock data if API fails
-      setProducts([
-        {
-          id: '1',
-          name: 'API Connection Error',
-          price: 0,
-          stock_quantity: 0,
-          brand: 'System',
-          sku: 'ERROR-001'
-        }
-      ]);
+      // Set empty array if API fails - no mock data
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -224,7 +245,7 @@ export default function AdminPage() {
 
   const fetchOrders = async () => {
     try {
-      console.log('Fetching orders from:', `${API_URL}/api/orders/admin/all`);
+      console.log('Fetching orders from backend API...');
       const res = await fetch(`${API_URL}/api/orders/admin/all`);
       
       if (!res.ok) {
@@ -232,7 +253,7 @@ export default function AdminPage() {
       }
       
       const data = await res.json();
-      console.log('Orders response:', data);
+      console.log('Orders fetched:', data.orders?.length || 0, 'orders');
       setOrders(data.orders || []);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
@@ -242,7 +263,7 @@ export default function AdminPage() {
 
   const fetchOrderStats = async () => {
     try {
-      console.log('Fetching order stats from:', `${API_URL}/api/orders/admin/stats`);
+      console.log('Fetching order stats from backend API...');
       const res = await fetch(`${API_URL}/api/orders/admin/stats`);
       
       if (!res.ok) {
@@ -250,7 +271,7 @@ export default function AdminPage() {
       }
       
       const data = await res.json();
-      console.log('Order stats response:', data);
+      console.log('Order stats:', data);
       setOrderStats(data);
     } catch (err) {
       console.error('Failed to fetch order stats:', err);
@@ -329,26 +350,26 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="pt-20 pb-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-text-primary">Admin Dashboard</h1>
+      <main className="pt-24 md:pt-28 pb-12 px-4 md:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto animate-fade-in">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-text-primary">Admin Dashboard</h1>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+              <span className="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-full text-sm font-medium border border-green-500/30">
                 Admin
               </span>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-4 border-b border-border mb-6 overflow-x-auto">
+          <div className="flex gap-1 md:gap-2 border-b border-border mb-6 overflow-x-auto pb-px scrollbar-hide">
             {['dashboard', 'products', 'inventory', 'orders', 'ai', 'analytics'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-3 px-4 font-medium whitespace-nowrap transition-colors ${
+                className={`pb-3 px-3 md:px-4 font-medium whitespace-nowrap transition-all text-sm md:text-base ${
                   activeTab === tab
-                    ? 'text-primary border-b-2 border-primary'
+                    ? 'text-accent border-b-2 border-accent'
                     : 'text-muted-foreground hover:text-text-primary'
                 }`}
               >
@@ -846,32 +867,40 @@ export default function AdminPage() {
                             <td className="px-6 py-4">
                               <div>
                                 <p className="font-medium text-text-primary">
-                                  {order.shipping_address?.full_name || order.customer_name || 'Rajesh Kumar'}
+                                  {order.shipping_address?.full_name || order.customer_name || 'N/A'}
                                 </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {order.customer_email || order.shipping_address?.email || 'rajesh.kumar@example.com'}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {order.customer_phone || order.shipping_address?.phone || '+91 9876543210'}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {order.shipping_address?.city || 'Vijayawada'}, {order.shipping_address?.state || 'Andhra Pradesh'}
-                                </p>
+                                {(order.customer_email || order.shipping_address?.email) && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {order.customer_email || order.shipping_address?.email}
+                                  </p>
+                                )}
+                                {(order.customer_phone || order.shipping_address?.phone) && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {order.customer_phone || order.shipping_address?.phone}
+                                  </p>
+                                )}
+                                {(order.shipping_address?.city || order.shipping_address?.state) && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {order.shipping_address?.city}{order.shipping_address?.city && order.shipping_address?.state ? ', ' : ''}{order.shipping_address?.state}
+                                  </p>
+                                )}
                               </div>
                             </td>
                             <td className="px-6 py-4">
                               <div>
                                 <p className="font-medium text-text-primary">
-                                  {order.order_items?.length || 1} items
+                                  {order.order_items?.length || 0} items
                                 </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {order.order_items?.[0]?.product_name || order.order_items?.[0]?.products?.name || 'Apple iPhone 15 Pro Max'}
-                                </p>
+                                {order.order_items?.[0] && (
+                                  <p className="text-sm text-muted-foreground">
+                                    {order.order_items[0].product_name || order.order_items[0].products?.name || 'Product'}
+                                  </p>
+                                )}
                               </div>
                             </td>
                             <td className="px-6 py-4">
                               <p className="font-bold text-text-primary">
-                                ₹{(order.total || order.total_amount || 159900).toLocaleString('en-IN')}
+                                ₹{(order.total || order.total_amount || 0).toLocaleString('en-IN')}
                               </p>
                             </td>
                             <td className="px-6 py-4">
@@ -905,9 +934,9 @@ export default function AdminPage() {
                                       onClick={async () => {
                                         const confirmed = confirm(
                                           `Approve order ${order.order_number}?\n\n` +
-                                          `Customer: ${order.shipping_address?.full_name || 'Rajesh Kumar'}\n` +
-                                          `Amount: ₹${(order.total || 159900).toLocaleString('en-IN')}\n` +
-                                          `Items: ${order.order_items?.length || 1}\n\n` +
+                                          `Customer: ${order.shipping_address?.full_name || 'N/A'}\n` +
+                                          `Amount: ₹${(order.total || 0).toLocaleString('en-IN')}\n` +
+                                          `Items: ${order.order_items?.length || 0}\n\n` +
                                           `This will update inventory automatically.`
                                         );
                                         if (confirmed) {
@@ -1404,99 +1433,300 @@ export default function AdminPage() {
           {/* Analytics Tab */}
           {activeTab === 'analytics' && !loading && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-text-primary">Analytics & Reports</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-text-primary mb-4">Inventory Turnover</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Fast Moving</span>
-                      <span className="font-medium text-green-600">2 products</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Slow Moving</span>
-                      <span className="font-medium text-yellow-600">1 product</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Dead Stock</span>
-                      <span className="font-medium text-red-600">0 products</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-text-primary mb-4">Top Categories</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Electronics</span>
-                      <span className="font-medium text-text-primary">3 products</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Fashion</span>
-                      <span className="font-medium text-text-primary">1 product</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Home & Living</span>
-                      <span className="font-medium text-text-primary">1 product</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-text-primary mb-4">Stock Alerts</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Critical</span>
-                      <span className="font-medium text-red-600">{stats.criticalStock}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Low Stock</span>
-                      <span className="font-medium text-yellow-600">{stats.lowStock}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Well Stocked</span>
-                      <span className="font-medium text-green-600">{stats.total - stats.lowStock - stats.criticalStock}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-card border border-border rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">Inventory Value Distribution</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-medium text-text-primary mb-3">By Category</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Electronics</span>
-                        <span className="font-medium text-text-primary">₹2,45,000</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Fashion</span>
-                        <span className="font-medium text-text-primary">₹60,000</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Home & Living</span>
-                        <span className="font-medium text-text-primary">₹28,000</span>
-                      </div>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl">
+                    <Icon name="SparklesIcon" size={24} className="text-white" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-text-primary mb-3">Stock Status</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">In Stock</span>
-                        <span className="font-medium text-green-600">₹3,29,000</span>
+                    <h2 className="text-xl md:text-2xl font-bold text-text-primary">AI-Powered Analytics</h2>
+                    <p className="text-sm text-muted-foreground">Real-time insights powered by AI</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={fetchAIInsights}
+                  disabled={aiLoading}
+                  className="flex items-center gap-2 px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/90 transition-colors disabled:opacity-50"
+                >
+                  <Icon name={aiLoading ? "ArrowPathIcon" : "ArrowPathIcon"} size={16} className={aiLoading ? "animate-spin" : ""} />
+                  Refresh
+                </button>
+              </div>
+
+              {aiLoading && (
+                <div className="flex items-center justify-center py-12">
+                  <div className="flex items-center gap-3">
+                    <Icon name="SparklesIcon" size={24} className="text-purple-500 animate-pulse" />
+                    <span className="text-muted-foreground">AI is analyzing your data...</span>
+                  </div>
+                </div>
+              )}
+
+              {!aiLoading && aiInsights && (
+                <>
+                  {/* AI Summary Banner */}
+                  <div className="bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10 border border-purple-500/20 rounded-xl p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-purple-500/20 rounded-xl">
+                        <Icon name="LightBulbIcon" size={28} className="text-purple-400" />
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Low Stock</span>
-                        <span className="font-medium text-yellow-600">₹4,250</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-lg font-semibold text-text-primary">AI Business Summary</h3>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            aiInsights.summary?.health_score >= 80 ? 'bg-green-500/20 text-green-400' :
+                            aiInsights.summary?.health_score >= 60 ? 'bg-yellow-500/20 text-yellow-400' :
+                            'bg-red-500/20 text-red-400'
+                          }`}>
+                            Health Score: {aiInsights.summary?.health_score || 0}%
+                          </span>
+                        </div>
+                        <p className="text-text-primary">{aiInsights.summary?.headline}</p>
                       </div>
                     </div>
                   </div>
+
+                  {/* Key Metrics from AI */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl p-4">
+                      <p className="text-sm text-blue-400">Total Orders</p>
+                      <p className="text-2xl font-bold text-blue-300">{aiInsights.order_insights?.total || 0}</p>
+                      <p className="text-xs text-blue-400/70 mt-1">Conversion: {aiInsights.order_insights?.conversion_rate || 0}%</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl p-4">
+                      <p className="text-sm text-green-400">Total Revenue</p>
+                      <p className="text-2xl font-bold text-green-300">₹{(aiInsights.revenue_insights?.total_revenue || 0).toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-green-400/70 mt-1">Today: ₹{(aiInsights.revenue_insights?.today_revenue || 0).toLocaleString('en-IN')}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20 rounded-xl p-4">
+                      <p className="text-sm text-purple-400">Avg Order Value</p>
+                      <p className="text-2xl font-bold text-purple-300">₹{(aiInsights.revenue_insights?.avg_order_value || 0).toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-purple-400/70 mt-1">Per product: ₹{(aiInsights.performance_metrics?.revenue_per_product || 0).toLocaleString('en-IN')}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/20 rounded-xl p-4">
+                      <p className="text-sm text-orange-400">Inventory Value</p>
+                      <p className="text-2xl font-bold text-orange-300">₹{(aiInsights.inventory_insights?.total_value || 0).toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-orange-400/70 mt-1">Health: {aiInsights.performance_metrics?.inventory_health || 0}%</p>
+                    </div>
+                  </div>
+
+                  {/* Charts Section */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Order Status Pie Chart */}
+                    <div className="bg-card border border-border rounded-xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Icon name="ChartPieIcon" size={20} className="text-blue-500" />
+                        <h3 className="text-lg font-semibold text-text-primary">Order Distribution</h3>
+                      </div>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { name: 'Pending', value: aiInsights.order_insights?.pending || 0, color: '#f97316' },
+                                { name: 'Approved', value: aiInsights.order_insights?.approved || 0, color: '#22c55e' },
+                                { name: 'Cancelled', value: aiInsights.order_insights?.cancelled || 0, color: '#ef4444' },
+                              ].filter(d => d.value > 0)}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={50}
+                              outerRadius={80}
+                              paddingAngle={5}
+                              dataKey="value"
+                              label={({ name, value }) => `${name}: ${value}`}
+                            >
+                              {[
+                                { name: 'Pending', value: aiInsights.order_insights?.pending || 0, color: '#f97316' },
+                                { name: 'Approved', value: aiInsights.order_insights?.approved || 0, color: '#22c55e' },
+                                { name: 'Cancelled', value: aiInsights.order_insights?.cancelled || 0, color: '#ef4444' },
+                              ].filter(d => d.value > 0).map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                              labelStyle={{ color: '#fff' }}
+                            />
+                            <Legend />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* Inventory Health Bar Chart */}
+                    <div className="bg-card border border-border rounded-xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Icon name="ChartBarIcon" size={20} className="text-purple-500" />
+                        <h3 className="text-lg font-semibold text-text-primary">Inventory Health</h3>
+                      </div>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart
+                            data={[
+                              { name: 'Healthy', value: aiInsights.inventory_insights?.healthy_stock || 0, fill: '#22c55e' },
+                              { name: 'Low Stock', value: aiInsights.inventory_insights?.low_stock || 0, fill: '#eab308' },
+                              { name: 'Critical', value: aiInsights.inventory_insights?.critical_stock || 0, fill: '#ef4444' },
+                              { name: 'Out of Stock', value: aiInsights.inventory_insights?.out_of_stock || 0, fill: '#6b7280' },
+                            ]}
+                            layout="vertical"
+                            margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
+                          >
+                            <XAxis type="number" stroke="#9ca3af" />
+                            <YAxis type="category" dataKey="name" stroke="#9ca3af" />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                              labelStyle={{ color: '#fff' }}
+                            />
+                            <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                              {[
+                                { name: 'Healthy', value: aiInsights.inventory_insights?.healthy_stock || 0, fill: '#22c55e' },
+                                { name: 'Low Stock', value: aiInsights.inventory_insights?.low_stock || 0, fill: '#eab308' },
+                                { name: 'Critical', value: aiInsights.inventory_insights?.critical_stock || 0, fill: '#ef4444' },
+                                { name: 'Out of Stock', value: aiInsights.inventory_insights?.out_of_stock || 0, fill: '#6b7280' },
+                              ].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Insights Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Order Insights */}
+                    <div className="bg-card border border-border rounded-xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Icon name="ShoppingCartIcon" size={20} className="text-blue-500" />
+                        <h3 className="text-lg font-semibold text-text-primary">Order Insights</h3>
+                      </div>
+                      <div className="space-y-3 mb-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Pending</span>
+                          <span className="font-medium text-orange-500">{aiInsights.order_insights?.pending || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Approved</span>
+                          <span className="font-medium text-green-500">{aiInsights.order_insights?.approved || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Cancelled</span>
+                          <span className="font-medium text-red-500">{aiInsights.order_insights?.cancelled || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Cancellation Rate</span>
+                          <span className="font-medium text-text-primary">{aiInsights.order_insights?.cancellation_rate || 0}%</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-blue-500/10 rounded-lg">
+                        <p className="text-sm text-blue-300">{aiInsights.order_insights?.analysis}</p>
+                      </div>
+                    </div>
+
+                    {/* Revenue Insights */}
+                    <div className="bg-card border border-border rounded-xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Icon name="CurrencyRupeeIcon" size={20} className="text-green-500" />
+                        <h3 className="text-lg font-semibold text-text-primary">Revenue Insights</h3>
+                      </div>
+                      <div className="space-y-3 mb-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Today's Orders</span>
+                          <span className="font-medium text-text-primary">{aiInsights.revenue_insights?.today_orders || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Today's Revenue</span>
+                          <span className="font-medium text-green-500">₹{(aiInsights.revenue_insights?.today_revenue || 0).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Projected Monthly</span>
+                          <span className="font-medium text-purple-500">₹{(aiInsights.revenue_insights?.projected_monthly || 0).toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Fulfillment Rate</span>
+                          <span className="font-medium text-text-primary">{aiInsights.performance_metrics?.order_fulfillment_rate || 0}%</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-green-500/10 rounded-lg">
+                        <p className="text-sm text-green-300">{aiInsights.revenue_insights?.analysis}</p>
+                      </div>
+                    </div>
+
+                    {/* Inventory Insights */}
+                    <div className="bg-card border border-border rounded-xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Icon name="CubeIcon" size={20} className="text-purple-500" />
+                        <h3 className="text-lg font-semibold text-text-primary">Inventory Insights</h3>
+                      </div>
+                      <div className="space-y-3 mb-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Total Products</span>
+                          <span className="font-medium text-text-primary">{aiInsights.inventory_insights?.total_products || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Healthy Stock</span>
+                          <span className="font-medium text-green-500">{aiInsights.inventory_insights?.healthy_stock || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Low Stock</span>
+                          <span className="font-medium text-yellow-500">{aiInsights.inventory_insights?.low_stock || 0}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Critical Stock</span>
+                          <span className="font-medium text-red-500">{aiInsights.inventory_insights?.critical_stock || 0}</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-purple-500/10 rounded-lg">
+                        <p className="text-sm text-purple-300">{aiInsights.inventory_insights?.analysis}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Recommendations */}
+                  <div className="bg-gradient-to-br from-amber-500/5 to-orange-500/5 border border-amber-500/20 rounded-xl p-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Icon name="SparklesIcon" size={20} className="text-amber-500" />
+                      <h3 className="text-lg font-semibold text-text-primary">AI Recommendations</h3>
+                    </div>
+                    <div className="space-y-3">
+                      {aiInsights.ai_recommendations?.map((rec, index) => (
+                        <div key={index} className="flex items-start gap-3 p-3 bg-card/50 rounded-lg border border-border/50">
+                          <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-xs font-bold text-amber-400">{index + 1}</span>
+                          </div>
+                          <p className="text-text-primary text-sm">{rec}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Critical Products Alert */}
+                  {aiInsights.inventory_insights?.critical_products?.length > 0 && (
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Icon name="ExclamationTriangleIcon" size={20} className="text-red-500" />
+                        <h3 className="text-lg font-semibold text-red-400">Critical Stock Alert</h3>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {aiInsights.inventory_insights.critical_products.map((product, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-red-500/5 rounded-lg border border-red-500/10">
+                            <span className="text-text-primary text-sm font-medium">{product.name}</span>
+                            <span className="text-red-400 font-bold">{product.stock} left</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {!aiLoading && !aiInsights && (
+                <div className="text-center py-12">
+                  <Icon name="ExclamationCircleIcon" size={48} className="text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Failed to load AI insights. Click refresh to try again.</p>
                 </div>
-              </div>
+              )}
             </div>
           )}
 

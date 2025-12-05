@@ -54,9 +54,9 @@ export default function ShoppingCartInteractive() {
   const itemCount = cartCount;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 text-neutral-900 dark:text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="pt-16">
+      <main className="pt-20 md:pt-24">
         {/* Luxury Hero Section */}
         <section className="relative py-16 md:py-20 bg-white dark:bg-neutral-950 border-b border-neutral-100 dark:border-neutral-800">
           <div className="absolute inset-0 opacity-30">

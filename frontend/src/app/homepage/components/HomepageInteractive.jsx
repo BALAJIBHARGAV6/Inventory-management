@@ -49,7 +49,7 @@ export default function HomepageInteractive({ pageData }) {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white selection:bg-black selection:text-white">
+    <div className="min-h-screen bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
       <Header onSearchSubmit={handleSearch} />
       
       <main>

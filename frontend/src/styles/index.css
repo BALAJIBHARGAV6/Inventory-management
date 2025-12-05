@@ -6,42 +6,12 @@
 
 @layer base {
   :root {
-    /* Light Theme - Default */
-    --color-background: #FFFFFF;
-    --color-foreground: #171717;
-    --color-card: #FFFFFF;
-    --color-card-foreground: #171717;
-    --color-popover: #FFFFFF;
-    --color-popover-foreground: #171717;
-    --color-muted: #FAFAFA;
-    --color-muted-foreground: #737373;
-    --color-primary: #171717;
-    --color-primary-foreground: #FFFFFF;
-    --color-secondary: #F5F5F5;
-    --color-secondary-foreground: #171717;
-    --color-accent: #171717;
-    --color-accent-foreground: #FFFFFF;
-    --color-destructive: #EF4444;
-    --color-destructive-foreground: #FFFFFF;
-    --color-border: #E5E5E5;
-    --color-input: #E5E5E5;
-    --color-ring: #171717;
-    
-    /* Radius */
-    --radius-sm: 0px;
-    --radius-md: 0px;
-    --radius-lg: 0px;
-    
-    /* Transitions */
-    --transition-base: 300ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  [data-theme='dark'] {
+    /* Dark Theme - Default */
     --color-background: #0A0A0A;
     --color-foreground: #FFFFFF;
-    --color-card: #0A0A0A;
+    --color-card: #111111;
     --color-card-foreground: #FFFFFF;
-    --color-popover: #0A0A0A;
+    --color-popover: #111111;
     --color-popover-foreground: #FFFFFF;
     --color-muted: #171717;
     --color-muted-foreground: #A3A3A3;
@@ -49,11 +19,69 @@
     --color-primary-foreground: #000000;
     --color-secondary: #262626;
     --color-secondary-foreground: #FFFFFF;
-    --color-accent: #FFFFFF;
-    --color-accent-foreground: #000000;
+    --color-accent: #3B82F6;
+    --color-accent-foreground: #FFFFFF;
+    --color-destructive: #EF4444;
+    --color-destructive-foreground: #FFFFFF;
     --color-border: #262626;
     --color-input: #262626;
-    --color-ring: #FFFFFF;
+    --color-ring: #3B82F6;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #A3A3A3;
+    
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-base: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-slow: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dark, [data-theme='dark'] {
+    --color-background: #0A0A0A;
+    --color-foreground: #FFFFFF;
+    --color-card: #111111;
+    --color-card-foreground: #FFFFFF;
+    --color-popover: #111111;
+    --color-popover-foreground: #FFFFFF;
+    --color-muted: #171717;
+    --color-muted-foreground: #A3A3A3;
+    --color-primary: #FFFFFF;
+    --color-primary-foreground: #000000;
+    --color-secondary: #262626;
+    --color-secondary-foreground: #FFFFFF;
+    --color-accent: #3B82F6;
+    --color-accent-foreground: #FFFFFF;
+    --color-border: #262626;
+    --color-input: #262626;
+    --color-ring: #3B82F6;
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #A3A3A3;
+  }
+
+  .light, [data-theme='light'] {
+    --color-background: #FFFFFF;
+    --color-foreground: #171717;
+    --color-card: #FFFFFF;
+    --color-card-foreground: #171717;
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #171717;
+    --color-muted: #F5F5F5;
+    --color-muted-foreground: #737373;
+    --color-primary: #171717;
+    --color-primary-foreground: #FFFFFF;
+    --color-secondary: #F5F5F5;
+    --color-secondary-foreground: #171717;
+    --color-accent: #3B82F6;
+    --color-accent-foreground: #FFFFFF;
+    --color-border: #E5E5E5;
+    --color-input: #E5E5E5;
+    --color-ring: #3B82F6;
+    --color-text-primary: #171717;
+    --color-text-secondary: #737373;
   }
 }
 
@@ -303,4 +331,18 @@
   .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
   .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
   .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Hide scrollbar but allow scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth page transitions */
+  .page-transition {
+    animation: fade-in 0.3s ease-out;
+  }
 }

@@ -129,21 +129,22 @@ export default function AboutPage() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-20 relative">
+        <section className="py-12 md:py-20 relative">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
               {stats.map((stat, index) => (
                 <div 
                   key={index} 
-                  className="glass-card rounded-2xl p-8 text-center hover:-translate-y-2 transition-smooth group"
+                  className="glass-card rounded-xl md:rounded-2xl p-4 md:p-8 text-center hover:-translate-y-2 transition-smooth group"
                 >
-                  <div className="w-14 h-14 mx-auto mb-4 bg-accent/10 rounded-xl flex items-center justify-center group-hover:bg-accent/20 transition-smooth">
-                    <Icon name={stat.icon} size={28} className="text-accent" />
+                  <div className="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-accent/10 rounded-lg md:rounded-xl flex items-center justify-center group-hover:bg-accent/20 transition-smooth">
+                    <Icon name={stat.icon} size={20} className="text-accent md:hidden" />
+                    <Icon name={stat.icon} size={28} className="text-accent hidden md:block" />
                   </div>
-                  <div className="text-4xl md:text-5xl font-bold text-text-primary mb-2">
+                  <div className="text-lg md:text-4xl lg:text-5xl font-bold text-text-primary mb-1 md:mb-2">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-text-secondary font-medium">{stat.label}</div>
+                  <div className="text-xs md:text-sm text-text-secondary font-medium">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -273,25 +274,25 @@ export default function AboutPage() {
         </section>
 
         {/* Team Section */}
-        <section className="py-24">
+        <section className="py-12 md:py-24">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <span className="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-4">
+            <div className="text-center mb-8 md:mb-16">
+              <span className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-accent/10 text-accent rounded-full text-xs md:text-sm font-medium mb-3 md:mb-4">
                 Our Team
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-text-primary">
                 Project Developers
               </h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
               {teamMembers.map((member, index) => (
                 <div 
                   key={index}
-                  className="glass-card rounded-3xl p-6 text-center hover:-translate-y-2 transition-smooth group"
+                  className="glass-card rounded-xl md:rounded-3xl p-3 md:p-6 text-center hover:-translate-y-2 transition-smooth group"
                 >
-                  <div className="relative w-32 h-32 mx-auto mb-6">
+                  <div className="relative w-16 h-16 md:w-32 md:h-32 mx-auto mb-3 md:mb-6">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent to-accent/50 rounded-full opacity-0 group-hover:opacity-100 transition-smooth blur-xl" />
-                    <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-background shadow-lg">
+                    <div className="relative w-full h-full rounded-full overflow-hidden border-2 md:border-4 border-background shadow-lg">
                       <AppImage
                         src={member.image}
                         alt={member.name}
@@ -299,9 +300,9 @@ export default function AboutPage() {
                       />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold text-text-primary mb-1">{member.name}</h3>
-                  <p className="text-accent font-medium mb-3">{member.role}</p>
-                  <p className="text-sm text-text-secondary">{member.bio}</p>
+                  <h3 className="text-sm md:text-xl font-bold text-text-primary mb-0.5 md:mb-1">{member.name}</h3>
+                  <p className="text-accent font-medium text-xs md:text-base mb-1 md:mb-3">{member.role}</p>
+                  <p className="text-xs md:text-sm text-text-secondary hidden md:block">{member.bio}</p>
                 </div>
               ))}
             </div>

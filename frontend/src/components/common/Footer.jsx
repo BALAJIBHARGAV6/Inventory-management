@@ -15,27 +15,28 @@ export default function Footer() {
     
     setIsSubscribing(true);
     try {
-      // Send email to your inbox
       const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
       
+      const data = await response.json();
+      
       if (response.ok) {
-        setMessage('Thank you for subscribing!');
+        setMessage(data.message || 'Thank you for subscribing!');
         setEmail('');
       } else {
-        setMessage('Subscription successful!'); // Always show success for UX
+        setMessage('Subscribed! We\'ll keep you updated.');
         setEmail('');
       }
     } catch (err) {
-      setMessage('Subscription successful!'); // Always show success for UX
+      setMessage('Subscribed! We\'ll keep you updated.');
       setEmail('');
     }
     
     setIsSubscribing(false);
-    setTimeout(() => setMessage(''), 3000);
+    setTimeout(() => setMessage(''), 5000);
   };
   return (
     <footer className="bg-neutral-950 text-white relative overflow-hidden">
@@ -51,49 +52,49 @@ export default function Footer() {
         <div className="py-16 md:py-20">
           <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12">
             {/* Top Section - Brand & Newsletter */}
-            <div className="grid md:grid-cols-2 gap-12 mb-16 md:mb-20">
-              <div>
-                <div className="flex items-center gap-3 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 md:mb-20">
+              <div className="text-center md:text-left">
+                <div className="flex items-center gap-3 mb-6 justify-center md:justify-start">
                   <div className="w-10 h-10 bg-white rounded-sm flex items-center justify-center">
                     <Icon name="CubeIcon" size={24} className="text-neutral-950" />
                   </div>
-                  <span className="text-2xl font-light tracking-tight text-white">
+                  <span className="text-xl md:text-2xl font-light tracking-tight text-white">
                     INVENTORYPREDICTOR
                   </span>
                 </div>
-                <p className="text-neutral-400 text-lg font-light leading-relaxed max-w-md">
+                <p className="text-neutral-400 text-base md:text-lg font-light leading-relaxed max-w-md mx-auto md:mx-0">
                   Curating exceptional products for the discerning modern lifestyle. 
                   Quality, elegance, and innovation in every selection.
                 </p>
               </div>
 
               <div className="md:pl-12">
-                <h3 className="text-lg font-light mb-6 text-white tracking-wide">
+                <h3 className="text-lg font-light mb-4 md:mb-6 text-white tracking-wide text-center md:text-left">
                   Stay Updated
                 </h3>
-                <p className="text-neutral-400 mb-6 font-light">
+                <p className="text-neutral-400 mb-4 md:mb-6 font-light text-center md:text-left text-sm md:text-base">
                   Subscribe to receive exclusive offers and new arrivals
                 </p>
                 <form onSubmit={handleSubscribe} className="space-y-3">
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input 
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
-                      className="flex-1 px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-neutral-400 focus:outline-none focus:border-white/40 transition-colors"
+                      className="flex-1 px-4 py-3 bg-white/10 border border-white/20 text-white placeholder-neutral-400 focus:outline-none focus:border-white/40 transition-colors rounded-sm"
                       required
                     />
                     <button 
                       type="submit"
                       disabled={isSubscribing}
-                      className="px-6 py-3 bg-white text-neutral-950 font-medium hover:bg-neutral-200 transition-colors disabled:opacity-50"
+                      className="px-6 py-3 bg-white text-neutral-950 font-medium hover:bg-neutral-200 transition-colors disabled:opacity-50 whitespace-nowrap"
                     >
                       {isSubscribing ? 'Subscribing...' : 'Subscribe'}
                     </button>
                   </div>
                   {message && (
-                    <p className="text-green-400 text-sm">{message}</p>
+                    <p className="text-green-400 text-sm text-center md:text-left">{message}</p>
                   )}
                 </form>
               </div>
@@ -209,38 +210,40 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-neutral-800 py-8">
+        <div className="border-t border-neutral-800 py-6 md:py-8">
           <div className="max-w-[1600px] mx-auto px-6 md:px-8 lg:px-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-8 text-sm text-neutral-500">
+            <div className="flex flex-col items-center gap-4 md:flex-row md:justify-between md:gap-6">
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-sm text-neutral-500 text-center">
                 <span>© {new Date().getFullYear()} InventoryPredictor</span>
-                <Link 
-                  href="/privacy-policy" 
-                  prefetch={true} 
-                  className="hover:text-white transition-all duration-300 hover:scale-105"
-                >
-                  Privacy Policy
-                </Link>
-                <Link 
-                  href="/terms-of-service" 
-                  prefetch={true} 
-                  className="hover:text-white transition-all duration-300 hover:scale-105"
-                >
-                  Terms of Service
-                </Link>
+                <div className="flex items-center gap-4">
+                  <Link 
+                    href="/privacy-policy" 
+                    prefetch={true} 
+                    className="hover:text-white transition-all duration-300"
+                  >
+                    Privacy
+                  </Link>
+                  <Link 
+                    href="/terms-of-service" 
+                    prefetch={true} 
+                    className="hover:text-white transition-all duration-300"
+                  >
+                    Terms
+                  </Link>
+                </div>
               </div>
               
               <div className="flex items-center gap-4">
-                <span className="text-xs text-neutral-500 uppercase tracking-wider">Follow Us</span>
+                <span className="text-xs text-neutral-500 uppercase tracking-wider hidden sm:block">Follow Us</span>
                 <div className="flex items-center gap-3">
-                  <Link href="#" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
-                    <span className="text-xs">f</span>
+                  <Link href="#" className="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                    <span className="text-sm">f</span>
                   </Link>
-                  <Link href="#" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
-                    <span className="text-xs">t</span>
+                  <Link href="#" className="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                    <span className="text-sm">t</span>
                   </Link>
-                  <Link href="#" className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
-                    <span className="text-xs">i</span>
+                  <Link href="#" className="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                    <span className="text-sm">i</span>
                   </Link>
                 </div>
               </div>

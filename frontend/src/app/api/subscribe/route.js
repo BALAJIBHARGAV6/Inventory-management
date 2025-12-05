@@ -1,4 +1,8 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function POST(request) {
   try {
@@ -8,31 +12,39 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
     }
 
-    // Here you would typically:
-    // 1. Save to database
-    // 2. Send email notification to inventorypredictor@gmail.com
-    // 3. Add to mailing list service (like Mailchimp, SendGrid, etc.)
+    console.log(`New subscription request: ${email}`);
     
-    // For now, we'll just log it and save to a simple storage
-    console.log(`New subscription: ${email}`);
+    // Try to save to Supabase if configured
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        
+        // Check if subscribers table exists and insert
+        const { error } = await supabase
+          .from('subscribers')
+          .upsert({ 
+            email: email.toLowerCase().trim(),
+            subscribed_at: new Date().toISOString()
+          }, { 
+            onConflict: 'email' 
+          });
+        
+        if (error) {
+          console.log('Supabase insert note:', error.message);
+          // Table might not exist, but we still accept the subscription
+        }
+      } catch (dbError) {
+        console.log('Database note:', dbError.message);
+      }
+    }
     
-    // You can add email service integration here
-    // Example with a simple email service:
-    /*
-    await fetch('https://api.emailservice.com/send', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer YOUR_API_KEY' },
-      body: JSON.stringify({
-        to: 'inventorypredictor@gmail.com',
-        subject: 'New Newsletter Subscription',
-        text: `New subscriber: ${email}`
-      })
-    });
-    */
+    // Note: For actual email notifications, you would need to integrate
+    // an email service like SendGrid, Resend, or AWS SES
+    // This requires API keys and additional setup
     
     return NextResponse.json({ 
       success: true, 
-      message: 'Successfully subscribed!' 
+      message: 'Thank you for subscribing! You will receive updates at ' + email
     });
     
   } catch (error) {

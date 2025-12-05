@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext({
-  theme: 'light',
+  theme: 'dark',
   toggleTheme: () => {},
 });
 
@@ -12,20 +12,27 @@ export function ThemeProvider({ children }) {
   const [mounted, setMounted] = useState(false);
 
   const applyTheme = (newTheme) => {
+    const root = document.documentElement;
     if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.style.backgroundColor = '#0a0a0a';
+      root.style.colorScheme = 'dark';
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      root.classList.add('light');
+      root.style.backgroundColor = '#ffffff';
+      root.style.colorScheme = 'light';
     }
-    document.documentElement.setAttribute('data-theme', newTheme);
+    root.setAttribute('data-theme', newTheme);
   };
 
   useEffect(() => {
-    setMounted(true);
-    // Default to dark theme if no saved preference
+    // Apply theme immediately on mount
     const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
     applyTheme(savedTheme);
+    setMounted(true);
   }, []);
 
   const toggleTheme = () => {
@@ -35,13 +42,9 @@ export function ThemeProvider({ children }) {
     applyTheme(newTheme);
   };
 
-  if (!mounted) {
-    // Show dark background while loading to prevent flash
-    return <div className="min-h-screen bg-neutral-950">{children}</div>;
-  }
-
+  // Always render children - the inline script in layout handles initial state
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -28,9 +28,9 @@ export default function ProductDetailsInteractive({ product }) {
   return (
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartCount} />
-      <main className="pt-16">
+      <main className="pt-20 md:pt-24">
         {/* Breadcrumb Section */}
-        <div className="bg-muted/30 py-4 border-b border-border">
+        <div className="bg-muted/30 py-3 border-b border-border">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <Breadcrumb items={breadcrumbItems} />
           </div>

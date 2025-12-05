@@ -186,9 +186,18 @@ class InventoryService {
         }
 
         const total = products?.length || 0;
-        const lowStock = products?.filter(p => p.stock_quantity <= (p.reorder_level || 10)).length || 0;
+        
+        // Critical stock: items with stock <= 5 (urgent attention needed)
+        const criticalStock = products?.filter(p => p.stock_quantity > 0 && p.stock_quantity <= 5).length || 0;
+        
+        // Low stock: items below reorder level but not critical (need restocking soon)
+        const lowStock = products?.filter(p => {
+          const reorderLevel = p.reorder_level || 10;
+          return p.stock_quantity > 5 && p.stock_quantity <= reorderLevel;
+        }).length || 0;
+        
+        // Out of stock: items with 0 quantity
         const outOfStock = products?.filter(p => p.stock_quantity === 0).length || 0;
-        const criticalStock = products?.filter(p => p.stock_quantity <= 5).length || 0;
         
         // Calculate real total inventory value
         const totalValue = products?.reduce((sum, product) => {
