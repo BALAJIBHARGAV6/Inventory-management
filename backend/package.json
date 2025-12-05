@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "tsx src/server.ts",
-    "start:prod": "node dist/server.js"
+    "start": "node dist/server.js",
+    "start:dev": "tsx src/server.ts"
   },
   "keywords": [
     "inventory",
