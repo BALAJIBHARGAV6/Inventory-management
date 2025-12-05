@@ -284,9 +284,9 @@ export default function HomepageInteractive({ pageData }) {
                   <div>
                     <h4 className="text-sm font-medium mb-6 uppercase tracking-[0.2em] text-neutral-300">Connect</h4>
                     <ul className="space-y-3 text-neutral-400 font-light">
-                      <li>support@inventorypredictor.com</li>
-                      <li>+91 1800-123-4567</li>
-                      <li>Mumbai, Maharashtra</li>
+                      <li>inventorypredictor@gmail.com</li>
+                      <li>+91 98765 43210</li>
+                      <li>Vijayawada, Andhra Pradesh</li>
                       <li>India</li>
                     </ul>
                   </div>

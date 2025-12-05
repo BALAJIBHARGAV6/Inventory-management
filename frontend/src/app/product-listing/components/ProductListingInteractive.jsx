@@ -1,7 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
 import Breadcrumb from '@/components/common/Breadcrumb';
 import ProductCard from './ProductCard';
 import FilterPanel from './FilterPanel';
@@ -11,6 +13,9 @@ import { useCart } from '@/contexts/CartContext';
 
 export default function ProductListingInteractive({ initialProducts = [] }) {
   const { cartCount } = useCart();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  
   const [products] = useState(initialProducts);
   const [sortBy, setSortBy] = useState('relevance');
   const [filters, setFilters] = useState({
@@ -28,6 +33,17 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
 
   const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((p) => 
+        p.name?.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query) ||
+        p.brand?.toLowerCase().includes(query) ||
+        p.category?.toLowerCase().includes(query)
+      );
+    }
 
     // Apply filters
     if (filters.inStockOnly) {
@@ -229,6 +245,7 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
           </div>
         </>
       )}
+      <Footer />
     </div>
   );
 }

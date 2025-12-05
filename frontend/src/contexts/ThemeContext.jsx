@@ -8,7 +8,7 @@ const ThemeContext = createContext({
 });
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
   const [mounted, setMounted] = useState(false);
 
   const applyTheme = (newTheme) => {
@@ -22,7 +22,8 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    // Default to dark theme if no saved preference
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     setTheme(savedTheme);
     applyTheme(savedTheme);
   }, []);
@@ -35,7 +36,8 @@ export function ThemeProvider({ children }) {
   };
 
   if (!mounted) {
-    return <div className="min-h-screen bg-white">{children}</div>;
+    // Show dark background while loading to prevent flash
+    return <div className="min-h-screen bg-neutral-950">{children}</div>;
   }
 
   return (

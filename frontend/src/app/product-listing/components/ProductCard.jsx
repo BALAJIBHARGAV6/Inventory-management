@@ -30,7 +30,7 @@ export default function ProductCard({ product, onAddToCart, viewMode = 'grid' })
   if (viewMode === 'list') {
     return (
       <div className="group flex gap-6 bg-white dark:bg-neutral-950 p-6 border border-neutral-200 dark:border-neutral-800 hover:shadow-lg transition-shadow duration-300">
-        <Link href="/product-details" className="flex-shrink-0">
+        <Link href={`/product-details/${product?.id}`} prefetch={true} className="flex-shrink-0">
           <div className="relative w-32 h-32 overflow-hidden bg-neutral-50 dark:bg-neutral-900">
             <AppImage
               src={product?.image}
@@ -47,7 +47,7 @@ export default function ProductCard({ product, onAddToCart, viewMode = 'grid' })
         
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <Link href="/product-details">
+            <Link href={`/product-details/${product?.id}`} prefetch={true}>
               <h3 className="text-lg font-medium text-neutral-900 dark:text-white mb-2 group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
                 {product?.name}
               </h3>
@@ -104,7 +104,7 @@ export default function ProductCard({ product, onAddToCart, viewMode = 'grid' })
   return (
     <article className="group relative border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 hover:shadow-xl transition-all duration-500 ease-out">
       {/* Image Section */}
-      <Link href="/product-details" className="block relative">
+      <Link href={`/product-details/${product?.id}`} prefetch={true} className="block relative">
         <div className="relative aspect-square w-full overflow-hidden">
           <AppImage
             src={product?.image}
@@ -160,7 +160,7 @@ export default function ProductCard({ product, onAddToCart, viewMode = 'grid' })
       {/* Editorial Product Information */}
       <div className="p-8 border-t border-neutral-100 dark:border-neutral-800">
         {/* Product Name */}
-        <Link href="/product-details">
+        <Link href={`/product-details/${product?.id}`} prefetch={true}>
           <h3 className="text-lg font-light text-neutral-900 dark:text-white mb-4 leading-tight tracking-tight group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors duration-300 line-clamp-2">
             {product?.name}
           </h3>

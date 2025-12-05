@@ -72,17 +72,17 @@ export default function HeroCarousel({ slides = [] }) {
     setIsAutoPlaying(false);
   };
 
+  // Auto-play carousel - always runs
   useEffect(() => {
-    if (!isAutoPlaying || displaySlides.length <= 1) return;
-    const interval = setInterval(nextSlide, 6000);
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % displaySlides.length);
+    }, 4000); // 4 seconds delay
     return () => clearInterval(interval);
-  }, [isAutoPlaying, displaySlides.length, nextSlide]);
+  }, [displaySlides.length]);
 
   return (
     <div 
       className="relative w-full h-[100vh] min-h-[600px] max-h-[900px] overflow-hidden group"
-      onMouseEnter={() => setIsAutoPlaying(false)}
-      onMouseLeave={() => setIsAutoPlaying(true)}
     >
       {displaySlides.map((slide, index) => (
         <div

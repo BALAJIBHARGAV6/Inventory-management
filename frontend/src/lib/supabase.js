@@ -540,12 +540,62 @@ export const clearCart = async (userId) => {
 
 // Orders
 export const createOrder = async (orderData) => {
-  const { data, error } = await supabase
-    .from('orders')
-    .insert(orderData)
-    .select()
-    .single();
-  return { data, error };
+  if (!supabase) {
+    console.error('Supabase not configured');
+    return { data: null, error: new Error('Database not configured') };
+  }
+  
+  try {
+    console.log('Saving order to Supabase:', orderData);
+    
+    // Insert order into orders table
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert({
+        order_number: orderData.order_number,
+        user_id: orderData.user_id !== 'guest' ? orderData.user_id : null,
+        status: orderData.status || 'pending',
+        subtotal: orderData.subtotal,
+        total: orderData.total,
+        shipping_address: orderData.shipping_address,
+      })
+      .select()
+      .single();
+    
+    if (orderError) {
+      console.error('Supabase order insert error:', orderError);
+      return { data: null, error: orderError };
+    }
+    
+    console.log('Order saved to Supabase:', order);
+    
+    // Insert order items if order was created successfully
+    if (order && orderData.items && orderData.items.length > 0) {
+      const orderItems = orderData.items.map(item => ({
+        order_id: order.id,
+        product_id: item.product_id || item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      }));
+      
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+      
+      if (itemsError) {
+        console.error('Order items insert error:', itemsError);
+      } else {
+        console.log('Order items saved successfully');
+      }
+    }
+    
+    return { data: order, error: null };
+  } catch (err) {
+    console.error('Order creation error:', err);
+    return { data: null, error: err };
+  }
 };
 
 export const createOrderItems = async (items) => {
@@ -557,12 +607,31 @@ export const createOrderItems = async (items) => {
 };
 
 export const getOrders = async (userId) => {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*, order_items(*, products(*))')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-  return { data, error };
+  if (!supabase) {
+    console.error('Supabase not configured');
+    return { data: [], error: new Error('Database not configured') };
+  }
+  
+  try {
+    console.log('Fetching orders for user:', userId);
+    
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*, order_items(*)')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('GetOrders error:', error);
+      return { data: [], error };
+    }
+    
+    console.log('Orders fetched:', data);
+    return { data: data || [], error: null };
+  } catch (err) {
+    console.error('GetOrders error:', err);
+    return { data: [], error: err };
+  }
 };
 
 export const getOrderById = async (orderId) => {
@@ -576,9 +645,33 @@ export const getOrderById = async (orderId) => {
 
 // User Profile
 export const getUserProfile = async (userId) => {
+  // First check localStorage for saved profile
+  const localProfile = localStorage.getItem('inventory_user_profile');
+  if (localProfile) {
+    try {
+      const parsed = JSON.parse(localProfile);
+      if (parsed.id === userId) {
+        // Return local profile immediately
+        return { data: parsed, error: null };
+      }
+    } catch (e) {}
+  }
+  
   if (!supabase) {
     // Return mock profile for mock users
     if (userId && userId.startsWith('mock-user-')) {
+      // Check if there's a saved mock profile
+      const storedProfile = localStorage.getItem('inventory_mock_profile');
+      if (storedProfile) {
+        try {
+          const mockProfile = JSON.parse(storedProfile);
+          if (mockProfile.id === userId) {
+            return { data: mockProfile, error: null };
+          }
+        } catch (e) {}
+      }
+      
+      // Fall back to user data
       const storedUser = localStorage.getItem('inventory_mock_user');
       if (storedUser) {
         const mockUser = JSON.parse(storedUser);
@@ -586,6 +679,8 @@ export const getUserProfile = async (userId) => {
           id: userId,
           user_id: userId,
           full_name: mockUser.user_metadata?.full_name || 'Demo User',
+          phone: mockUser.user_metadata?.phone || '',
+          address: mockUser.user_metadata?.address || '',
           email: mockUser.email,
           is_admin: false,
           created_at: mockUser.created_at
@@ -597,69 +692,60 @@ export const getUserProfile = async (userId) => {
   }
   
   try {
-    const { data, error } = await supabase
+    // Try to get from Supabase with timeout
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => resolve({ data: null, error: null }), 3000);
+    });
+    
+    const fetchPromise = supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single();
-    return { data, error };
+    
+    const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
+    
+    if (data) {
+      // Save to localStorage for future use
+      localStorage.setItem('inventory_user_profile', JSON.stringify(data));
+      return { data, error };
+    }
+    
+    // If no data from Supabase, check localStorage
+    if (localProfile) {
+      return { data: JSON.parse(localProfile), error: null };
+    }
+    
+    return { data: null, error };
   } catch (err) {
     console.error('GetUserProfile error:', err);
+    // Return local profile on error
+    if (localProfile) {
+      return { data: JSON.parse(localProfile), error: null };
+    }
     return { data: null, error: null };
   }
 };
 
 export const getFilterData = async () => {
-  try {
-    // Check if Supabase is configured
-    if (!supabaseUrl || !supabaseAnonKey) {
-      console.warn('Supabase not configured, using fallback data');
-      return {
-        categories: [
-          { name: 'Electronics', count: 8 },
-          { name: 'Fashion', count: 2 },
-          { name: 'Home & Living', count: 1 },
-          { name: 'Sports', count: 2 },
-        ],
-        brands: [
-          { name: 'Apple', count: 4 },
-          { name: 'Samsung', count: 3 },
-          { name: 'Sony', count: 2 },
-          { name: 'Nike', count: 2 },
-          { name: 'Adidas', count: 1 },
-        ]
-      };
-    }
-
-    // Fetch categories with product counts
-    const { data: categoryData, error: categoryError } = await supabase
-      .from('products')
-      .select('category')
-      .not('category', 'is', null);
-
-    // Fetch brands with product counts  
-    const { data: brandData, error: brandError } = await supabase
-      .from('products')
-      .select('brand')
-      .not('brand', 'is', null);
-
-    if (categoryError || brandError) {
-      throw new Error('Failed to fetch filter data');
-    }
-
-    // Count categories
+  // Helper function to get filter data from products
+  const getFilterDataFromProducts = (products) => {
     const categoryCount = {};
-    categoryData?.forEach(item => {
-      categoryCount[item.category] = (categoryCount[item.category] || 0) + 1;
-    });
-
-    // Count brands
     const brandCount = {};
-    brandData?.forEach(item => {
-      brandCount[item.brand] = (brandCount[item.brand] || 0) + 1;
+    
+    products.forEach(product => {
+      // Count categories
+      const categoryName = product.categories?.name || product.category;
+      if (categoryName) {
+        categoryCount[categoryName] = (categoryCount[categoryName] || 0) + 1;
+      }
+      
+      // Count brands
+      if (product.brand) {
+        brandCount[product.brand] = (brandCount[product.brand] || 0) + 1;
+      }
     });
-
-    // Format data
+    
     const categories = Object.entries(categoryCount).map(([name, count]) => ({
       name,
       count
@@ -671,43 +757,115 @@ export const getFilterData = async () => {
     })).sort((a, b) => b.count - a.count);
 
     return { categories, brands };
+  };
+
+  try {
+    // Check if Supabase is configured
+    if (!supabaseUrl || !supabaseAnonKey || !supabase) {
+      console.log('Using mock products for filter data');
+      return getFilterDataFromProducts(MOCK_PRODUCTS);
+    }
+
+    // Fetch products from database
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('brand, categories(name)')
+      .eq('is_active', true);
+
+    if (error || !products || products.length === 0) {
+      console.log('No products from database, using mock data');
+      return getFilterDataFromProducts(MOCK_PRODUCTS);
+    }
+
+    return getFilterDataFromProducts(products);
   } catch (error) {
     console.error('Error fetching filter data:', error);
-    // Return fallback data on error
-    return {
-      categories: [
-        { name: 'Electronics', count: 8 },
-        { name: 'Fashion', count: 2 },
-        { name: 'Home & Living', count: 1 },
-        { name: 'Sports', count: 2 },
-      ],
-      brands: [
-        { name: 'Apple', count: 4 },
-        { name: 'Samsung', count: 3 },
-        { name: 'Sony', count: 2 },
-        { name: 'Nike', count: 2 },
-        { name: 'Adidas', count: 1 },
-      ]
-    };
+    return getFilterDataFromProducts(MOCK_PRODUCTS);
   }
 };
 
 export const updateUserProfile = async (userId, profileData) => {
+  // Always save to localStorage first as backup
+  const localProfile = {
+    id: userId,
+    user_id: userId,
+    full_name: profileData.full_name,
+    phone: profileData.phone,
+    address: profileData.address,
+    updated_at: new Date().toISOString(),
+  };
+  localStorage.setItem('inventory_user_profile', JSON.stringify(localProfile));
+  
   if (!supabase) {
-    return { data: null, error: new Error('Database not configured') };
+    // For demo mode, update the mock user in localStorage
+    console.log('Demo Mode: Updating profile for:', userId);
+    
+    try {
+      const storedUser = localStorage.getItem('inventory_mock_user');
+      if (storedUser) {
+        const mockUser = JSON.parse(storedUser);
+        mockUser.user_metadata = {
+          ...mockUser.user_metadata,
+          full_name: profileData.full_name,
+          phone: profileData.phone,
+          address: profileData.address,
+        };
+        localStorage.setItem('inventory_mock_user', JSON.stringify(mockUser));
+        localStorage.setItem('inventory_mock_profile', JSON.stringify(localProfile));
+        
+        console.log('Demo Mode: Profile updated successfully');
+        return { data: localProfile, error: null };
+      }
+      return { data: localProfile, error: null };
+    } catch (err) {
+      console.error('Demo Mode: Profile update error:', err);
+      return { data: localProfile, error: null };
+    }
   }
   
   try {
-    const { data, error } = await supabase
+    // Update profile with timeout
+    const updateData = {
+      full_name: profileData.full_name,
+      phone: profileData.phone || null,
+      address: profileData.address || null,
+      updated_at: new Date().toISOString(),
+    };
+    
+    console.log('Updating profile for user:', userId);
+    
+    // Create a promise that rejects after 5 seconds
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('timeout')), 5000);
+    });
+    
+    // Race between the update and timeout
+    const updatePromise = supabase
       .from('profiles')
-      .update(profileData)
+      .update(updateData)
       .eq('id', userId)
       .select()
       .single();
-    return { data, error };
+    
+    try {
+      const { data, error } = await Promise.race([updatePromise, timeoutPromise]);
+      
+      if (error) {
+        console.error('Supabase update error:', error);
+        // Return local data on error
+        return { data: localProfile, error: null };
+      }
+      
+      return { data: data || localProfile, error: null };
+    } catch (raceErr) {
+      // Timeout or other error - return local data
+      console.log('Profile update timed out, using local storage');
+      return { data: localProfile, error: null };
+    }
   } catch (err) {
     console.error('UpdateUserProfile error:', err);
-    return { data: null, error: err };
+    // Return local data on any error
+    return { data: localProfile, error: null };
   }
 };
 

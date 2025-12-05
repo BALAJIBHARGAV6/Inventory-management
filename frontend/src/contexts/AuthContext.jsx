@@ -77,6 +77,23 @@ export function AuthProvider({ children }) {
     return { error };
   };
 
+  // Function to refresh profile data
+  const refreshProfile = async () => {
+    if (user) {
+      try {
+        const { data: profileData } = await getUserProfile(user.id);
+        if (profileData) {
+          setProfile(profileData);
+        }
+        return profileData;
+      } catch (err) {
+        console.error('Error refreshing profile:', err);
+        return null;
+      }
+    }
+    return null;
+  };
+
   const value = {
     user,
     profile,
@@ -86,6 +103,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    refreshProfile,
   };
 
   return (

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
 import Icon from '@/components/ui/AppIcon';
 import AppImage from '@/components/ui/AppImage';
 
@@ -21,46 +22,53 @@ export default function AboutPage() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  // Project team members
   const teamMembers = [
     {
-      name: 'Rahul Sharma',
-      role: 'Founder & CEO',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
-      bio: 'Visionary leader with 15+ years in e-commerce',
-    },
-    {
-      name: 'Priya Patel',
-      role: 'Head of Design',
+      name: 'Pragathi',
+      role: 'Developer',
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop',
-      bio: 'Award-winning designer passionate about UX',
+      bio: 'Full Stack Development',
     },
     {
-      name: 'Amit Kumar',
-      role: 'CTO',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop',
-      bio: 'Tech innovator building scalable solutions',
-    },
-    {
-      name: 'Sneha Reddy',
-      role: 'Head of Operations',
+      name: 'Meghana',
+      role: 'Developer',
       image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop',
-      bio: 'Operations expert ensuring seamless delivery',
+      bio: 'Frontend Development',
+    },
+    {
+      name: 'Sravani',
+      role: 'Developer',
+      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop',
+      bio: 'Backend Development',
+    },
+    {
+      name: 'Prem Sai',
+      role: 'Developer',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop',
+      bio: 'Database & API Development',
+    },
+    {
+      name: 'Ajay',
+      role: 'Developer',
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop',
+      bio: 'UI/UX Design',
     },
   ];
 
   const stats = [
-    { value: '50K+', label: 'Happy Customers', icon: 'UserGroupIcon' },
-    { value: '10K+', label: 'Products', icon: 'CubeIcon' },
-    { value: '99%', label: 'Satisfaction', icon: 'StarIcon' },
-    { value: '24/7', label: 'Support', icon: 'ChatBubbleLeftRightIcon' },
+    { value: 'Next.js', label: 'Frontend Framework', icon: 'CodeBracketIcon' },
+    { value: 'Supabase', label: 'Database & Auth', icon: 'CircleStackIcon' },
+    { value: 'Fastify', label: 'Backend API', icon: 'ServerIcon' },
+    { value: 'AI/ML', label: 'Demand Forecasting', icon: 'SparklesIcon' },
   ];
 
-  const milestones = [
-    { year: '2020', title: 'Founded', desc: 'Started with a vision to transform e-commerce' },
-    { year: '2021', title: '10K Users', desc: 'Reached our first major milestone' },
-    { year: '2022', title: 'Expansion', desc: 'Launched in 10+ cities across India' },
-    { year: '2023', title: 'Award', desc: 'Best E-commerce Platform Award' },
-    { year: '2024', title: '50K Users', desc: 'Growing stronger every day' },
+  const features = [
+    { year: 'Feature 1', title: 'Inventory Management', desc: 'Real-time stock tracking and automated reorder alerts' },
+    { year: 'Feature 2', title: 'AI Demand Forecasting', desc: 'Machine learning powered sales predictions' },
+    { year: 'Feature 3', title: 'E-commerce Platform', desc: 'Full-featured online shopping experience' },
+    { year: 'Feature 4', title: 'Analytics Dashboard', desc: 'Comprehensive sales and inventory analytics' },
+    { year: 'Feature 5', title: 'User Authentication', desc: 'Secure login with role-based access control' },
   ];
 
   return (
@@ -87,18 +95,18 @@ export default function AboutPage() {
             <div className="max-w-4xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full mb-8 animate-slide-down">
                 <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                <span className="text-sm font-medium text-text-secondary">Trusted by 50,000+ customers</span>
+                <span className="text-sm font-medium text-text-secondary">B.Tech Final Year Project 2025-26</span>
               </div>
               
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-8 animate-slide-up">
-                We're Building the
+                InventoryPredictor
                 <span className="block mt-2 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
-                  Future of Shopping
+                  Final Year Project
                 </span>
               </h1>
               
               <p className="text-xl md:text-2xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                Premium products, exceptional service, and an unparalleled customer experience.
+                An AI-powered inventory management system with demand forecasting and e-commerce capabilities.
               </p>
 
               <div className="flex flex-wrap justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
@@ -148,24 +156,26 @@ export default function AboutPage() {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="order-2 lg:order-1">
                 <span className="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-6">
-                  Our Journey
+                  Project Overview
                 </span>
                 <h2 className="text-4xl md:text-5xl font-bold text-text-primary mb-8">
-                  From Vision to Reality
+                  About This Project
                 </h2>
                 <div className="space-y-6 text-lg text-text-secondary leading-relaxed">
                   <p>
-                    Founded in 2020, InventoryPredictor began with a bold vision: 
-                    to create an online shopping experience that truly puts customers first.
+                    <strong>InventoryPredictor</strong> is a comprehensive inventory management system 
+                    developed as a B.Tech Final Year Project. It combines modern web technologies 
+                    with AI-powered demand forecasting.
                   </p>
                   <p>
-                    What started as a small startup has blossomed into a trusted platform 
-                    serving over 50,000 customers across India. We believe in quality 
-                    over quantity—every product is carefully curated.
+                    The system helps businesses manage their inventory efficiently by predicting 
+                    future demand patterns, automating reorder processes, and providing real-time 
+                    analytics for better decision making.
                   </p>
                   <p>
-                    Our commitment extends beyond products. From lightning-fast delivery 
-                    to 24/7 customer support, we're here to make every shopping experience exceptional.
+                    Built with Next.js 14, Supabase, and Fastify, this project demonstrates 
+                    full-stack development skills including authentication, database management, 
+                    API development, and responsive UI design.
                   </p>
                 </div>
               </div>
@@ -197,26 +207,26 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Timeline Section */}
+        {/* Features Section */}
         <section className="py-24">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="text-center mb-16">
               <span className="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-4">
-                Milestones
+                Key Features
               </span>
               <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
-                Our Journey So Far
+                Project Features
               </h2>
             </div>
             <div className="relative max-w-4xl mx-auto">
               <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2 hidden md:block" />
-              {milestones.map((milestone, index) => (
+              {features.map((feature, index) => (
                 <div key={index} className={`relative flex items-center gap-8 mb-12 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                   <div className={`flex-1 ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                     <div className="glass-card rounded-2xl p-6 hover:-translate-y-1 transition-smooth">
-                      <div className="text-accent font-bold text-lg mb-2">{milestone.year}</div>
-                      <h3 className="text-xl font-semibold text-text-primary mb-2">{milestone.title}</h3>
-                      <p className="text-text-secondary">{milestone.desc}</p>
+                      <div className="text-accent font-bold text-lg mb-2">{feature.year}</div>
+                      <h3 className="text-xl font-semibold text-text-primary mb-2">{feature.title}</h3>
+                      <p className="text-text-secondary">{feature.desc}</p>
                     </div>
                   </div>
                   <div className="hidden md:flex w-12 h-12 bg-accent rounded-full items-center justify-center z-10 flex-shrink-0">
@@ -229,22 +239,22 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Values Section */}
+        {/* Tech Stack Section */}
         <section className="py-24 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="text-center mb-16">
               <span className="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-4">
-                What Drives Us
+                Technologies Used
               </span>
               <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
-                Our Core Values
+                Tech Stack
               </h2>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: 'HeartIcon', title: 'Customer First', desc: 'Every decision starts with our customers. Their satisfaction is our success.', color: 'from-pink-500 to-rose-500' },
-                { icon: 'SparklesIcon', title: 'Quality Excellence', desc: 'We never compromise. Every product meets our rigorous quality standards.', color: 'from-amber-500 to-orange-500' },
-                { icon: 'ShieldCheckIcon', title: 'Trust & Transparency', desc: 'Building lasting relationships through honest communication and integrity.', color: 'from-emerald-500 to-teal-500' },
+                { icon: 'CodeBracketIcon', title: 'Frontend', desc: 'Next.js 14, React, TailwindCSS, Framer Motion for a modern, responsive UI.', color: 'from-blue-500 to-cyan-500' },
+                { icon: 'CircleStackIcon', title: 'Backend & Database', desc: 'Fastify API server with Supabase PostgreSQL database and authentication.', color: 'from-emerald-500 to-teal-500' },
+                { icon: 'SparklesIcon', title: 'AI/ML', desc: 'Machine learning models for demand forecasting and inventory optimization.', color: 'from-purple-500 to-pink-500' },
               ].map((value, index) => (
                 <div 
                   key={index}
@@ -267,13 +277,13 @@ export default function AboutPage() {
           <div className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="text-center mb-16">
               <span className="inline-block px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-medium mb-4">
-                The People
+                Our Team
               </span>
               <h2 className="text-4xl md:text-5xl font-bold text-text-primary">
-                Meet Our Team
+                Project Developers
               </h2>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {teamMembers.map((member, index) => (
                 <div 
                   key={index}
@@ -307,31 +317,32 @@ export default function AboutPage() {
           </div>
           <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Ready to Experience
-              <span className="block">Premium Shopping?</span>
+              Explore the
+              <span className="block">InventoryPredictor</span>
             </h2>
             <p className="text-xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
-              Join 50,000+ happy customers and discover our curated collection of premium products.
+              Experience the full features of this inventory management system with AI-powered forecasting.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="/product-listing"
                 className="px-10 py-5 bg-background text-foreground rounded-xl font-bold text-lg hover:scale-105 transition-smooth flex items-center gap-3 shadow-xl"
               >
-                Start Shopping
+                View Products
                 <Icon name="ArrowRightIcon" size={24} />
               </a>
               <a
-                href="/shopping-cart"
+                href="/admin"
                 className="px-10 py-5 bg-transparent border-2 border-primary-foreground text-primary-foreground rounded-xl font-bold text-lg hover:bg-primary-foreground/10 transition-smooth flex items-center gap-3"
               >
-                View Cart
-                <Icon name="ShoppingCartIcon" size={24} />
+                Admin Dashboard
+                <Icon name="Cog6ToothIcon" size={24} />
               </a>
             </div>
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }

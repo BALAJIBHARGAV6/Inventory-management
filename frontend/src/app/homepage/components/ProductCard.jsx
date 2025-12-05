@@ -27,7 +27,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="group cursor-pointer">
-      <Link href="/product-details" className="block">
+      <Link href={`/product-details/${product?.id}`} prefetch={true} className="block">
         {/* Image Container - Perfect Rectangle */}
         <div className="relative aspect-[3/4] w-full mb-6 overflow-hidden bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800">
           <img 
@@ -75,7 +75,7 @@ export default function ProductCard({ product }) {
       {/* Product Information - Refined Typography */}
       <div className="space-y-3">
         {/* Product Title */}
-        <Link href="/product-details">
+        <Link href={`/product-details/${product?.id}`} prefetch={true}>
           <h3 className="text-[15px] font-normal text-neutral-900 dark:text-white leading-snug tracking-tight 
             group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors duration-300 line-clamp-2">
             {product?.name}

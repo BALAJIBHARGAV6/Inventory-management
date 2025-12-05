@@ -80,7 +80,7 @@ const staticData = {
   testimonials: [
     {
       name: 'Priya Sharma',
-      location: 'Mumbai, India',
+      location: 'Vijayawada, India',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
       rating: 5,
       content: 'Amazing shopping experience! The delivery was super fast and the product quality exceeded my expectations. Will definitely shop again.',

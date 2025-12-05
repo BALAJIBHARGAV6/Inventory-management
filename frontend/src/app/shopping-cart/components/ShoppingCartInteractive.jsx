@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
 import CartItem from './CartItem';
 import OrderSummary from './OrderSummary';
 import EmptyCart from './EmptyCart';
@@ -41,8 +42,8 @@ export default function ShoppingCartInteractive() {
 
   const handleCheckout = async () => {
     setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    router.push('/checkout-process');
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    router.push('/checkout');
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -119,6 +120,7 @@ export default function ShoppingCartInteractive() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
