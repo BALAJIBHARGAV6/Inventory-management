@@ -7,8 +7,17 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Load environment variables from .env.local first, then .env
+dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+// Debug environment loading
+console.log('Environment loading check:');
+console.log('Current working directory:', process.cwd());
+console.log('__dirname:', __dirname);
+console.log('SUPABASE_URL loaded:', process.env.SUPABASE_URL ? 'YES' : 'NO');
+console.log('SUPABASE_SERVICE_KEY loaded:', process.env.SUPABASE_SERVICE_KEY ? 'YES' : 'NO');
 
 // Routes
 import authRoutes from './routes/auth.route';
@@ -28,7 +37,19 @@ async function registerPlugins() {
   await server.register(helmet, { contentSecurityPolicy: false });
 
   await server.register(cors, {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',');
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        console.log('Allowed origins:', allowedOrigins);
+        callback(new Error('Not allowed by CORS'), false);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   });
@@ -57,6 +78,8 @@ async function registerRoutes() {
   server.get('/health', async () => ({
     status: 'ok',
     timestamp: new Date().toISOString(),
+    database: process.env.SUPABASE_URL ? 'configured' : 'not configured',
+    environment: process.env.NODE_ENV || 'development',
   }));
 
   await server.register(authRoutes, { prefix: '/api/auth' });
