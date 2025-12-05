@@ -223,16 +223,13 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 </div>
               </div>
 
-              {/* Modern 2-Line Menu Toggle */}
+              {/* Mobile Menu Toggle */}
               <button
                 onClick={handleMobileMenuToggle}
-                className="flex lg:hidden items-center justify-center w-10 h-10 text-text-primary hover:text-accent transition-all duration-300 rounded-md hover:bg-muted relative group"
+                className="flex lg:hidden items-center justify-center w-10 h-10 text-text-primary hover:text-accent transition-micro rounded-md hover:bg-muted"
                 aria-label="Toggle menu"
               >
-                <div className="w-5 h-4 flex flex-col justify-center items-end gap-1.5">
-                  <span className={`h-0.5 bg-current rounded-full transition-all duration-300 ease-out ${isMobileMenuOpen ? 'w-5 rotate-45 translate-y-1' : 'w-5 group-hover:w-4'}`} />
-                  <span className={`h-0.5 bg-current rounded-full transition-all duration-300 ease-out ${isMobileMenuOpen ? 'w-5 -rotate-45 -translate-y-1' : 'w-3.5 group-hover:w-5'}`} />
-                </div>
+                <Icon name={isMobileMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={24} />
               </button>
             </div>
           </div>
@@ -256,20 +253,14 @@ export default function Header({ onSearchSubmit, onCartClick }) {
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'
         }`}>
           {/* Close Button */}
-          <div className="flex justify-end p-4 sm:p-6">
+          <div className="flex justify-end p-6">
             <button
               type="button"
-              onClick={() => {
-                console.log('Close button clicked');
-                setIsMobileMenuOpen(false);
-              }}
-              className="w-14 h-14 flex items-center justify-center text-white bg-white/10 hover:bg-white/20 rounded-full transition-all duration-300 hover:rotate-90 active:scale-95 z-[999] cursor-pointer"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-12 h-12 flex items-center justify-center text-white hover:text-neutral-300 transition-colors"
               aria-label="Close menu"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <Icon name="XMarkIcon" size={32} />
             </button>
           </div>
 
