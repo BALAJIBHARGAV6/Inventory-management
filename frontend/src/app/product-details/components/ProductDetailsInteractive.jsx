@@ -49,18 +49,21 @@ export default function ProductDetailsInteractive({ product }) {
               <AddToCartSection product={product} onAddToCart={handleAddToCart} />
               
               {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 {[
                   { icon: 'TruckIcon', label: 'Free Shipping', desc: 'On orders above ₹999' },
                   { icon: 'ArrowPathIcon', label: 'Easy Returns', desc: '7 days return policy' },
                   { icon: 'ShieldCheckIcon', label: 'Secure Payment', desc: '100% secure checkout' },
                 ].map((badge, index) => (
-                  <div key={index} className="bg-gradient-to-br from-muted/50 to-muted border border-border rounded-2xl p-5 text-center hover:shadow-lg transition-all duration-300">
-                    <div className="w-12 h-12 mx-auto mb-3 bg-gradient-to-br from-accent/20 to-accent/5 rounded-xl flex items-center justify-center">
-                      <Icon name={badge.icon} size={24} className="text-accent" />
+                  <div key={index} className="bg-gradient-to-br from-muted/50 to-muted border border-border rounded-xl sm:rounded-2xl p-3 sm:p-5 text-center hover:shadow-lg transition-all duration-300 flex sm:flex-col items-center sm:items-center gap-3 sm:gap-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 sm:mx-auto sm:mb-3 bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Icon name={badge.icon} size={20} className="text-accent sm:hidden" />
+                      <Icon name={badge.icon} size={24} className="text-accent hidden sm:block" />
                     </div>
-                    <h4 className="text-sm font-semibold text-text-primary mb-1">{badge.label}</h4>
-                    <span className="text-xs text-text-secondary">{badge.desc}</span>
+                    <div className="text-left sm:text-center">
+                      <h4 className="text-sm font-semibold text-text-primary mb-0.5 sm:mb-1">{badge.label}</h4>
+                      <span className="text-xs text-text-secondary">{badge.desc}</span>
+                    </div>
                   </div>
                 ))}
               </div>

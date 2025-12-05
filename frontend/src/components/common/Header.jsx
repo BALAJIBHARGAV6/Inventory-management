@@ -256,25 +256,6 @@ export default function Header({ onSearchSubmit, onCartClick }) {
             </button>
           </div>
 
-          {/* Search Bar */}
-          <div className="px-8 mb-8">
-            <form onSubmit={handleSearchSubmit}>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e?.target?.value)}
-                  placeholder="Search products..."
-                  className="w-full h-14 pl-14 pr-6 text-lg bg-white/10 border border-white/20 rounded-none text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
-                />
-                <Icon
-                  name="MagnifyingGlassIcon"
-                  size={24}
-                  className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50"
-                />
-              </div>
-            </form>
-          </div>
 
           {/* Navigation Links */}
           <nav className="flex-1 flex flex-col justify-center px-8 -mt-20">
@@ -314,6 +295,39 @@ export default function Header({ onSearchSubmit, onCartClick }) {
                 </span>
               )}
             </Link>
+            
+            {/* Profile Link in Mobile Menu */}
+            {isAuthenticated ? (
+              <Link
+                href="/profile"
+                prefetch={true}
+                onClick={handleMobileMenuToggle}
+                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+                }`}
+                style={{ transitionDelay: '350ms' }}
+              >
+                <Icon name="UserCircleIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
+                <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
+                  My Profile
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                prefetch={true}
+                onClick={handleMobileMenuToggle}
+                className={`group flex items-center gap-6 py-5 border-b border-white/10 transition-all duration-300 ${
+                  isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+                }`}
+                style={{ transitionDelay: '350ms' }}
+              >
+                <Icon name="UserCircleIcon" size={28} className="text-white/60 group-hover:text-white transition-colors" />
+                <span className="text-3xl font-light text-white tracking-wide group-hover:translate-x-2 transition-transform">
+                  Sign In
+                </span>
+              </Link>
+            )}
           </nav>
 
           {/* Bottom Actions */}

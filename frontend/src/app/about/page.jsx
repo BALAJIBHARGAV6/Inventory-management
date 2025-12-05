@@ -321,7 +321,7 @@ export default function AboutPage() {
               Explore the
               <span className="block">InventoryPredictor</span>
             </h2>
-            <p className="text-xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
+            <p className="text-xl text-white mb-10 max-w-2xl mx-auto">
               Experience the full features of this inventory management system with AI-powered forecasting.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -331,13 +331,6 @@ export default function AboutPage() {
               >
                 View Products
                 <Icon name="ArrowRightIcon" size={24} />
-              </a>
-              <a
-                href="/admin"
-                className="px-10 py-5 bg-transparent border-2 border-primary-foreground text-primary-foreground rounded-xl font-bold text-lg hover:bg-primary-foreground/10 transition-smooth flex items-center gap-3"
-              >
-                Admin Dashboard
-                <Icon name="Cog6ToothIcon" size={24} />
               </a>
             </div>
           </div>

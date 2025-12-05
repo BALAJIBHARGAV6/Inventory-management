@@ -222,20 +222,20 @@ export default function ProductListingInteractive({ initialProducts = [] }) {
       {showMobileFilters && (
         <>
           <div
-            className="fixed inset-0 z-[90] bg-black/30 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[90] bg-black/50 backdrop-blur-sm lg:hidden"
             onClick={() => setShowMobileFilters(false)}
           />
-          <div className="fixed inset-y-0 left-0 z-[95] w-80 max-w-full bg-white dark:bg-neutral-950 shadow-2xl lg:hidden overflow-y-auto border-r border-neutral-200 dark:border-neutral-800">
-            <div className="p-6 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
-              <h2 className="text-lg font-light text-neutral-900 dark:text-white tracking-wide">Filters</h2>
+          <div className="fixed inset-y-0 left-0 z-[95] w-[85%] max-w-[320px] bg-white dark:bg-neutral-950 shadow-2xl lg:hidden overflow-y-auto border-r border-neutral-200 dark:border-neutral-800 animate-slide-in-left">
+            <div className="sticky top-0 p-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between bg-white dark:bg-neutral-950 z-10">
+              <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Filters</h2>
               <button
                 onClick={() => setShowMobileFilters(false)}
-                className="p-2 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors duration-300"
+                className="p-2 text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors duration-300 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
               >
-                <Icon name="XMarkIcon" size={20} />
+                <Icon name="XMarkIcon" size={24} />
               </button>
             </div>
-            <div className="p-6">
+            <div className="pb-20">
               <FilterPanel
                 filters={filters}
                 onFilterChange={setFilters}
