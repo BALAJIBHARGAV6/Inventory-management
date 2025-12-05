@@ -7,6 +7,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 // Debug logging
 console.log('Supabase URL configured:', !!supabaseUrl);
 console.log('Supabase Key configured:', !!supabaseAnonKey);
+console.log('Actual Supabase URL:', supabaseUrl);
+console.log('URL Length:', supabaseUrl.length);
 
 // Force demo mode for now - disable Supabase connection
 const FORCE_DEMO_MODE = false;
@@ -62,31 +64,15 @@ export const signUp = async (email, password, fullName) => {
   }
   
   try {
+    // First, let's try a simple auth test
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
     });
     
-    // If signup successful, create profile entry
-    if (data?.user && !error) {
-      try {
-        await supabase
-          .from('profiles')
-          .insert({
-            id: data.user.id,
-            full_name: fullName,
-            email: email,
-            updated_at: new Date().toISOString()
-          });
-      } catch (profileError) {
-        console.log('Profile creation error (non-critical):', profileError);
-      }
-    }
+    console.log('Supabase signup result:', { data: !!data, error: error?.message });
+    console.log('Full error object:', error);
+    console.log('User data:', data?.user);
     
     return { data, error };
   } catch (err) {
