@@ -1035,80 +1035,74 @@ export default function AdminPage() {
 
           {/* AI Forecasting Tab */}
           {activeTab === 'ai' && !loading && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-text-primary">AI Inventory Forecasting</h2>
+            <div className="space-y-4 sm:space-y-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-text-primary">AI Inventory Forecasting</h2>
               
               {/* Generate Forecast Section */}
-              <div className="bg-card border border-border rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">Generate AI Demand Forecast</h3>
-                <p className="text-muted-foreground mb-6">
-                  Use AI to predict future demand and get intelligent restocking recommendations based on your current inventory.
+              <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-text-primary mb-3 sm:mb-4">Generate AI Demand Forecast</h3>
+                <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
+                  Use AI to predict future demand and get intelligent restocking recommendations.
                 </p>
-                <div className="flex flex-wrap gap-3 mb-6">
+                <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
                   {[30, 60, 90].map((days) => (
                     <button
                       key={days}
                       onClick={() => generateForecast(days)}
                       disabled={loading}
-                      className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                      className="px-4 sm:px-6 py-2 sm:py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors text-sm sm:text-base"
                     >
-                      {days}-Day Forecast
+                      {days}-Day
                     </button>
                   ))}
                 </div>
 
                 {forecast && (
-                  <div className="bg-muted/30 rounded-lg p-6 border border-border">
-                    <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-muted/30 rounded-lg p-4 sm:p-6 border border-border">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                       <Icon name="SparklesIcon" size={24} className="text-primary" />
-                      <h4 className="text-lg font-semibold text-text-primary">Advanced AI Market Intelligence</h4>
+                      <h4 className="text-base sm:text-lg font-semibold text-text-primary">AI Market Intelligence</h4>
                       <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
-                        {forecast.methodology ? 'Indian Market Analysis' : 'Global Trends'}
+                        {forecast.methodology ? 'Indian Market' : 'Global'}
                       </span>
                     </div>
                     
                     {/* Key Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                      <div className="bg-card p-4 rounded-lg border">
-                        <p className="text-sm text-muted-foreground">Products Analyzed</p>
-                        <p className="text-2xl font-bold text-text-primary">{forecast.total_products_analyzed}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+                      <div className="bg-card p-3 sm:p-4 rounded-lg border">
+                        <p className="text-xs sm:text-sm text-muted-foreground">Products</p>
+                        <p className="text-xl sm:text-2xl font-bold text-text-primary">{forecast.total_products_analyzed}</p>
                       </div>
-                      <div className="bg-card p-4 rounded-lg border">
-                        <p className="text-sm text-muted-foreground">Confidence Score</p>
-                        <p className="text-2xl font-bold text-green-600">{Math.round((forecast.confidence_score || 0.85) * 100)}%</p>
+                      <div className="bg-card p-3 sm:p-4 rounded-lg border">
+                        <p className="text-xs sm:text-sm text-muted-foreground">Confidence</p>
+                        <p className="text-xl sm:text-2xl font-bold text-green-600">{Math.round((forecast.confidence_score || 0.85) * 100)}%</p>
                       </div>
-                      <div className="bg-card p-4 rounded-lg border">
-                        <p className="text-sm text-muted-foreground">Season</p>
-                        <p className="text-lg font-bold text-primary capitalize">{forecast.seasonal_context?.current_season || 'Winter'}</p>
+                      <div className="bg-card p-3 sm:p-4 rounded-lg border">
+                        <p className="text-xs sm:text-sm text-muted-foreground">Season</p>
+                        <p className="text-base sm:text-lg font-bold text-primary capitalize">{forecast.seasonal_context?.current_season || 'Winter'}</p>
                       </div>
-                      <div className="bg-card p-4 rounded-lg border">
-                        <p className="text-sm text-muted-foreground">Festival Impact</p>
-                        <p className="text-lg font-bold text-orange-600">{forecast.seasonal_context?.festival_impact?.multiplier ? `${forecast.seasonal_context.festival_impact.multiplier}x` : '1.0x'}</p>
+                      <div className="bg-card p-3 sm:p-4 rounded-lg border">
+                        <p className="text-xs sm:text-sm text-muted-foreground">Festival</p>
+                        <p className="text-base sm:text-lg font-bold text-orange-600">{forecast.seasonal_context?.festival_impact?.multiplier ? `${forecast.seasonal_context.festival_impact.multiplier}x` : '1.0x'}</p>
                       </div>
                     </div>
 
                     {/* Seasonal Context */}
                     {forecast.seasonal_context && (
-                      <div className="bg-card p-4 rounded-lg border mb-6">
-                        <h5 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
+                      <div className="bg-card p-3 sm:p-4 rounded-lg border mb-4 sm:mb-6">
+                        <h5 className="text-sm sm:text-base font-semibold text-text-primary mb-2 sm:mb-3 flex items-center gap-2">
                           <Icon name="CalendarIcon" size={16} />
                           Seasonal Intelligence
                         </h5>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
                           <div>
-                            <p className="text-sm text-muted-foreground">Current Season</p>
-                            <p className="font-medium text-text-primary capitalize">{forecast.seasonal_context.current_season}</p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {forecast.seasonal_context.upcoming_season && `Transitioning to ${forecast.seasonal_context.upcoming_season}`}
-                            </p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Current Season</p>
+                            <p className="text-sm sm:text-base font-medium text-text-primary capitalize">{forecast.seasonal_context.current_season}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Festival Period</p>
-                            <p className="font-medium text-text-primary">
+                            <p className="text-xs sm:text-sm text-muted-foreground">Festival Period</p>
+                            <p className="text-sm sm:text-base font-medium text-text-primary">
                               {forecast.seasonal_context.festival_impact?.current?.name || 'Regular Period'}
-                            </p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {forecast.seasonal_context.festival_impact?.current?.reason || 'Normal demand period'}
                             </p>
                           </div>
                         </div>
@@ -1117,26 +1111,23 @@ export default function AdminPage() {
 
                     {/* Market Intelligence */}
                     {forecast.market_intelligence && (
-                      <div className="bg-card p-4 rounded-lg border mb-6">
-                        <h5 className="font-semibold text-text-primary mb-3 flex items-center gap-2">
+                      <div className="bg-card p-3 sm:p-4 rounded-lg border mb-4 sm:mb-6">
+                        <h5 className="text-sm sm:text-base font-semibold text-text-primary mb-2 sm:mb-3 flex items-center gap-2">
                           <Icon name="TrendingUpIcon" size={16} />
                           Market Intelligence
                         </h5>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4">
                           <div>
-                            <p className="text-sm text-muted-foreground">Economic Trends</p>
-                            <p className="text-sm text-text-primary">GDP Growth: {forecast.market_intelligence.economic_trends?.gdp_growth}%</p>
-                            <p className="text-sm text-text-primary">Consumer Confidence: {forecast.market_intelligence.economic_trends?.consumer_confidence}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Economic</p>
+                            <p className="text-xs sm:text-sm text-text-primary">GDP: {forecast.market_intelligence.economic_trends?.gdp_growth}%</p>
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Consumer Behavior</p>
-                            <p className="text-sm text-text-primary">Online Preference: {forecast.market_intelligence.consumer_behavior?.online_preference}</p>
-                            <p className="text-sm text-text-primary">Mobile Commerce: {forecast.market_intelligence.consumer_behavior?.mobile_commerce}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Consumer</p>
+                            <p className="text-xs sm:text-sm text-text-primary">Online: {forecast.market_intelligence.consumer_behavior?.online_preference}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Supply Chain</p>
-                            <p className="text-sm text-text-primary">Efficiency: {forecast.market_intelligence.supply_chain_factors?.logistics_efficiency}</p>
-                            <p className="text-sm text-text-primary">Costs: {forecast.market_intelligence.supply_chain_factors?.inventory_costs}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Supply</p>
+                            <p className="text-xs sm:text-sm text-text-primary">{forecast.market_intelligence.supply_chain_factors?.logistics_efficiency}</p>
                           </div>
                         </div>
                       </div>
@@ -1238,34 +1229,34 @@ export default function AdminPage() {
               </div>
 
               {/* Restock Recommendations */}
-              <div className="bg-card border border-border rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-text-primary">Smart Restock Recommendations</h3>
+              <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-text-primary">Smart Restock Recommendations</h3>
                   <button
                     onClick={fetchRecommendations}
                     disabled={loading}
-                    className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 disabled:opacity-50"
+                    className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 disabled:opacity-50 text-sm w-full sm:w-auto"
                   >
                     Refresh
                   </button>
                 </div>
 
                 {recommendations.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Icon name="CheckCircleIcon" size={48} className="text-green-500 mx-auto mb-3" />
-                    <p className="text-lg font-medium text-text-primary mb-2">All Products Well Stocked!</p>
-                    <p className="text-muted-foreground">No immediate restocking needed based on current inventory levels.</p>
+                  <div className="text-center py-6 sm:py-8">
+                    <Icon name="CheckCircleIcon" size={40} className="text-green-500 mx-auto mb-3" />
+                    <p className="text-base sm:text-lg font-medium text-text-primary mb-2">All Products Well Stocked!</p>
+                    <p className="text-sm text-muted-foreground">No immediate restocking needed.</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {recommendations.map((rec, i) => (
-                      <div key={i} className="border border-border rounded-lg p-4 hover:bg-muted/30 transition-colors">
-                        <div className="flex justify-between items-start mb-3">
+                      <div key={i} className="border border-border rounded-lg p-3 sm:p-4 hover:bg-muted/30 transition-colors">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
                           <div>
-                            <h4 className="font-semibold text-text-primary">{rec.product_name}</h4>
-                            <p className="text-sm text-muted-foreground">Current Stock: {rec.current_stock} units</p>
+                            <h4 className="text-sm sm:text-base font-semibold text-text-primary">{rec.product_name}</h4>
+                            <p className="text-xs sm:text-sm text-muted-foreground">Current Stock: {rec.current_stock} units</p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium w-fit ${
                             rec.urgency === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
                             rec.urgency === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
                             'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
@@ -1274,26 +1265,26 @@ export default function AdminPage() {
                           </span>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-3">
                           <div>
-                            <p className="text-xs text-muted-foreground">Recommended Order</p>
-                            <p className="font-semibold text-primary">{rec.recommended_order} units</p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">Order Qty</p>
+                            <p className="text-xs sm:text-sm font-semibold text-primary">{rec.recommended_order} units</p>
                           </div>
                           <div>
-                            <p className="text-xs text-muted-foreground">Est. Days Until Stockout</p>
-                            <p className="font-semibold text-text-primary">{rec.estimated_days_until_stockout || 'N/A'} days</p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">Days Left</p>
+                            <p className="text-xs sm:text-sm font-semibold text-text-primary">{rec.estimated_days_until_stockout || 'N/A'}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-muted-foreground">Reorder Cost</p>
-                            <p className="font-semibold text-text-primary">₹{(rec.reorder_cost || 0).toLocaleString('en-IN')}</p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">Cost</p>
+                            <p className="text-xs sm:text-sm font-semibold text-text-primary">₹{(rec.reorder_cost || 0).toLocaleString('en-IN')}</p>
                           </div>
                         </div>
                         
-                        <p className="text-sm text-muted-foreground mb-3">{rec.reasoning}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 line-clamp-2">{rec.reasoning}</p>
                         
                         {rec.suggested_supplier && (
                           <p className="text-xs text-muted-foreground">
-                            <span className="font-medium">Suggested Supplier:</span> {rec.suggested_supplier}
+                            <span className="font-medium">Supplier:</span> {rec.suggested_supplier}
                           </p>
                         )}
                       </div>
@@ -1303,88 +1294,87 @@ export default function AdminPage() {
               </div>
 
               {/* AI Product Recommendations */}
-              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <Icon name="SparklesIcon" size={24} className="text-purple-600" />
-                    <h3 className="text-lg font-semibold text-text-primary">AI Product Recommendations</h3>
-                    <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs rounded-full">
+              <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <Icon name="SparklesIcon" size={20} className="text-purple-600" />
+                    <h3 className="text-base sm:text-lg font-semibold text-text-primary">AI Product Recommendations</h3>
+                    <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs rounded-full">
                       Indian Market AI
                     </span>
                   </div>
                   <button
                     onClick={fetchProductRecommendations}
                     disabled={loading}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors"
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors text-sm w-full sm:w-auto"
                   >
-                    Generate New Suggestions
+                    Generate Suggestions
                   </button>
                 </div>
 
-                <div className="mb-6">
-                  <p className="text-muted-foreground text-sm">
-                    AI-powered product suggestions based on Indian market trends, seasonal patterns, festival impacts, 
-                    and your current inventory gaps. These recommendations are designed to maximize sales and profit.
+                <div className="mb-4 sm:mb-6">
+                  <p className="text-muted-foreground text-xs sm:text-sm">
+                    AI-powered product suggestions based on Indian market trends, seasonal patterns, and your inventory gaps.
                   </p>
                 </div>
 
                 {productRecommendations.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Icon name="SparklesIcon" size={48} className="text-purple-400 mx-auto mb-3" />
-                    <p className="text-lg font-medium text-text-primary mb-2">Generate AI Recommendations</p>
-                    <p className="text-muted-foreground">Click "Generate New Suggestions" to get personalized product recommendations for your store.</p>
+                  <div className="text-center py-6 sm:py-8">
+                    <Icon name="SparklesIcon" size={40} className="text-purple-400 mx-auto mb-3" />
+                    <p className="text-base sm:text-lg font-medium text-text-primary mb-2">Generate AI Recommendations</p>
+                    <p className="text-sm text-muted-foreground">Click "Generate Suggestions" to get personalized product recommendations.</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     {productRecommendations.map((rec, i) => (
-                      <div key={i} className="bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 rounded-lg p-6 hover:shadow-lg transition-all duration-300">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <h4 className="text-lg font-semibold text-text-primary mb-1">{rec.name}</h4>
-                            <p className="text-sm text-muted-foreground">{rec.category}</p>
+                      <div key={i} className="bg-white dark:bg-gray-800 border border-purple-200 dark:border-purple-700 rounded-lg p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+                        <div className="flex items-start justify-between gap-2 mb-3 sm:mb-4">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-base sm:text-lg font-semibold text-text-primary mb-1 truncate">{rec.name}</h4>
+                            <p className="text-xs sm:text-sm text-muted-foreground">{rec.category}</p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
                             rec.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
                             rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
                             'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                           }`}>
-                            {rec.priority?.toUpperCase()} PRIORITY
+                            {rec.priority?.toUpperCase()}
                           </span>
                         </div>
 
-                        <div className="space-y-3 mb-4">
+                        <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                           <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Price Range</span>
-                            <span className="text-sm font-medium text-text-primary">{rec.price_range}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground">Price Range</span>
+                            <span className="text-xs sm:text-sm font-medium text-text-primary">{rec.price_range}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Expected Demand</span>
-                            <span className="text-sm font-medium text-text-primary">{rec.expected_demand}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground">Expected Demand</span>
+                            <span className="text-xs sm:text-sm font-medium text-text-primary">{rec.expected_demand}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Expected ROI</span>
-                            <span className="text-sm font-medium text-green-600">{rec.expected_roi}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground">Expected ROI</span>
+                            <span className="text-xs sm:text-sm font-medium text-green-600">{rec.expected_roi}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-sm text-muted-foreground">Investment</span>
-                            <span className="text-sm font-medium text-text-primary">₹{rec.investment_required?.toLocaleString('en-IN')}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground">Investment</span>
+                            <span className="text-xs sm:text-sm font-medium text-text-primary">₹{rec.investment_required?.toLocaleString('en-IN')}</span>
                           </div>
                         </div>
 
-                        <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg mb-4">
-                          <p className="text-sm text-text-primary leading-relaxed">
-                            <Icon name="LightBulbIcon" size={14} className="inline mr-1 text-purple-600" />
+                        <div className="bg-purple-50 dark:bg-purple-900/20 p-2 sm:p-3 rounded-lg mb-3 sm:mb-4">
+                          <p className="text-xs sm:text-sm text-text-primary leading-relaxed line-clamp-2">
+                            <Icon name="LightBulbIcon" size={12} className="inline mr-1 text-purple-600" />
                             {rec.reasoning}
                           </p>
                         </div>
 
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span>Target: {rec.target_audience}</span>
-                          <span>Launch: {rec.launch_timing}</span>
+                          <span className="truncate">Target: {rec.target_audience}</span>
+                          <span className="truncate ml-2">Launch: {rec.launch_timing}</span>
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-purple-200 dark:border-purple-700">
-                          <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium">
+                        <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-purple-200 dark:border-purple-700">
+                          <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-xs sm:text-sm font-medium">
                             Add to Inventory Plan
                           </button>
                         </div>
@@ -1394,31 +1384,31 @@ export default function AdminPage() {
                 )}
 
                 {/* Market Insights */}
-                <div className="mt-8 pt-6 border-t border-purple-200 dark:border-purple-700">
-                  <h4 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
-                    <Icon name="TrendingUpIcon" size={20} className="text-purple-600" />
+                <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-purple-200 dark:border-purple-700">
+                  <h4 className="text-base sm:text-lg font-semibold text-text-primary mb-3 sm:mb-4 flex items-center gap-2">
+                    <Icon name="TrendingUpIcon" size={18} className="text-purple-600" />
                     Current Market Insights
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
-                      <h5 className="font-medium text-text-primary mb-2">Trending Categories</h5>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-purple-200 dark:border-purple-700">
+                      <h5 className="text-sm sm:text-base font-medium text-text-primary mb-2">Trending Categories</h5>
+                      <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
                         <li>• Audio products (40% growth)</li>
                         <li>• Health & fitness devices</li>
                         <li>• Premium electronics</li>
                       </ul>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
-                      <h5 className="font-medium text-text-primary mb-2">Seasonal Factors</h5>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-purple-200 dark:border-purple-700">
+                      <h5 className="text-sm sm:text-base font-medium text-text-primary mb-2">Seasonal Factors</h5>
+                      <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
                         <li>• Winter electronics demand</li>
                         <li>• Festival season approaching</li>
                         <li>• Student season prep</li>
                       </ul>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-purple-200 dark:border-purple-700">
-                      <h5 className="font-medium text-text-primary mb-2">Consumer Behavior</h5>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                    <div className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg border border-purple-200 dark:border-purple-700">
+                      <h5 className="text-sm sm:text-base font-medium text-text-primary mb-2">Consumer Behavior</h5>
+                      <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
                         <li>• 85% online preference</li>
                         <li>• High brand consciousness</li>
                         <li>• Review-dependent purchases</li>
@@ -1465,60 +1455,60 @@ export default function AdminPage() {
               {!aiLoading && aiInsights && (
                 <>
                   {/* AI Summary Banner */}
-                  <div className="bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10 border border-purple-500/20 rounded-xl p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-purple-500/20 rounded-xl">
-                        <Icon name="LightBulbIcon" size={28} className="text-purple-400" />
+                  <div className="bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-cyan-500/10 border border-purple-500/20 rounded-xl p-4 sm:p-6">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="p-2 sm:p-3 bg-purple-500/20 rounded-xl">
+                        <Icon name="LightBulbIcon" size={24} className="text-purple-400" />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-lg font-semibold text-text-primary">AI Business Summary</h3>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                          <h3 className="text-base sm:text-lg font-semibold text-text-primary">AI Business Summary</h3>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             aiInsights.summary?.health_score >= 80 ? 'bg-green-500/20 text-green-400' :
                             aiInsights.summary?.health_score >= 60 ? 'bg-yellow-500/20 text-yellow-400' :
                             'bg-red-500/20 text-red-400'
                           }`}>
-                            Health Score: {aiInsights.summary?.health_score || 0}%
+                            Health: {aiInsights.summary?.health_score || 0}%
                           </span>
                         </div>
-                        <p className="text-text-primary">{aiInsights.summary?.headline}</p>
+                        <p className="text-sm sm:text-base text-text-primary">{aiInsights.summary?.headline}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Key Metrics from AI */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl p-4">
-                      <p className="text-sm text-blue-400">Total Orders</p>
-                      <p className="text-2xl font-bold text-blue-300">{aiInsights.order_insights?.total || 0}</p>
-                      <p className="text-xs text-blue-400/70 mt-1">Conversion: {aiInsights.order_insights?.conversion_rate || 0}%</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl p-3 sm:p-4">
+                      <p className="text-xs sm:text-sm text-blue-400">Total Orders</p>
+                      <p className="text-xl sm:text-2xl font-bold text-blue-300">{aiInsights.order_insights?.total || 0}</p>
+                      <p className="text-[10px] sm:text-xs text-blue-400/70 mt-1">Conversion: {aiInsights.order_insights?.conversion_rate || 0}%</p>
                     </div>
-                    <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl p-4">
-                      <p className="text-sm text-green-400">Total Revenue</p>
-                      <p className="text-2xl font-bold text-green-300">₹{(aiInsights.revenue_insights?.total_revenue || 0).toLocaleString('en-IN')}</p>
-                      <p className="text-xs text-green-400/70 mt-1">Today: ₹{(aiInsights.revenue_insights?.today_revenue || 0).toLocaleString('en-IN')}</p>
+                    <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl p-3 sm:p-4">
+                      <p className="text-xs sm:text-sm text-green-400">Total Revenue</p>
+                      <p className="text-xl sm:text-2xl font-bold text-green-300">₹{(aiInsights.revenue_insights?.total_revenue || 0).toLocaleString('en-IN')}</p>
+                      <p className="text-[10px] sm:text-xs text-green-400/70 mt-1">Today: ₹{(aiInsights.revenue_insights?.today_revenue || 0).toLocaleString('en-IN')}</p>
                     </div>
-                    <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20 rounded-xl p-4">
-                      <p className="text-sm text-purple-400">Avg Order Value</p>
-                      <p className="text-2xl font-bold text-purple-300">₹{(aiInsights.revenue_insights?.avg_order_value || 0).toLocaleString('en-IN')}</p>
-                      <p className="text-xs text-purple-400/70 mt-1">Per product: ₹{(aiInsights.performance_metrics?.revenue_per_product || 0).toLocaleString('en-IN')}</p>
+                    <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/20 rounded-xl p-3 sm:p-4">
+                      <p className="text-xs sm:text-sm text-purple-400">Avg Order Value</p>
+                      <p className="text-xl sm:text-2xl font-bold text-purple-300">₹{(aiInsights.revenue_insights?.avg_order_value || 0).toLocaleString('en-IN')}</p>
+                      <p className="text-[10px] sm:text-xs text-purple-400/70 mt-1 truncate">Per product: ₹{(aiInsights.performance_metrics?.revenue_per_product || 0).toLocaleString('en-IN')}</p>
                     </div>
-                    <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/20 rounded-xl p-4">
-                      <p className="text-sm text-orange-400">Inventory Value</p>
-                      <p className="text-2xl font-bold text-orange-300">₹{(aiInsights.inventory_insights?.total_value || 0).toLocaleString('en-IN')}</p>
-                      <p className="text-xs text-orange-400/70 mt-1">Health: {aiInsights.performance_metrics?.inventory_health || 0}%</p>
+                    <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border border-orange-500/20 rounded-xl p-3 sm:p-4">
+                      <p className="text-xs sm:text-sm text-orange-400">Inventory Value</p>
+                      <p className="text-xl sm:text-2xl font-bold text-orange-300">₹{(aiInsights.inventory_insights?.total_value || 0).toLocaleString('en-IN')}</p>
+                      <p className="text-[10px] sm:text-xs text-orange-400/70 mt-1">Health: {aiInsights.performance_metrics?.inventory_health || 0}%</p>
                     </div>
                   </div>
 
                   {/* Charts Section */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                     {/* Order Status Pie Chart */}
-                    <div className="bg-card border border-border rounded-xl p-6">
+                    <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
                       <div className="flex items-center gap-2 mb-4">
                         <Icon name="ChartPieIcon" size={20} className="text-blue-500" />
-                        <h3 className="text-lg font-semibold text-text-primary">Order Distribution</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-text-primary">Order Distribution</h3>
                       </div>
-                      <div className="h-64">
+                      <div className="h-52 sm:h-64">
                         <ResponsiveContainer width="100%" height="100%">
                           <PieChart>
                             <Pie
@@ -1554,12 +1544,12 @@ export default function AdminPage() {
                     </div>
 
                     {/* Inventory Health Bar Chart */}
-                    <div className="bg-card border border-border rounded-xl p-6">
+                    <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
                       <div className="flex items-center gap-2 mb-4">
                         <Icon name="ChartBarIcon" size={20} className="text-purple-500" />
-                        <h3 className="text-lg font-semibold text-text-primary">Inventory Health</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-text-primary">Inventory Health</h3>
                       </div>
-                      <div className="h-64">
+                      <div className="h-52 sm:h-64">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
                             data={[
@@ -1594,14 +1584,14 @@ export default function AdminPage() {
                   </div>
 
                   {/* AI Insights Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                     {/* Order Insights */}
-                    <div className="bg-card border border-border rounded-xl p-6">
-                      <div className="flex items-center gap-2 mb-4">
+                    <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+                      <div className="flex items-center gap-2 mb-3 sm:mb-4">
                         <Icon name="ShoppingCartIcon" size={20} className="text-blue-500" />
-                        <h3 className="text-lg font-semibold text-text-primary">Order Insights</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-text-primary">Order Insights</h3>
                       </div>
-                      <div className="space-y-3 mb-4">
+                      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground">Pending</span>
                           <span className="font-medium text-orange-500">{aiInsights.order_insights?.pending || 0}</span>
@@ -1625,12 +1615,12 @@ export default function AdminPage() {
                     </div>
 
                     {/* Revenue Insights */}
-                    <div className="bg-card border border-border rounded-xl p-6">
-                      <div className="flex items-center gap-2 mb-4">
+                    <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+                      <div className="flex items-center gap-2 mb-3 sm:mb-4">
                         <Icon name="CurrencyRupeeIcon" size={20} className="text-green-500" />
-                        <h3 className="text-lg font-semibold text-text-primary">Revenue Insights</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-text-primary">Revenue Insights</h3>
                       </div>
-                      <div className="space-y-3 mb-4">
+                      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground">Today's Orders</span>
                           <span className="font-medium text-text-primary">{aiInsights.revenue_insights?.today_orders || 0}</span>
@@ -1654,12 +1644,12 @@ export default function AdminPage() {
                     </div>
 
                     {/* Inventory Insights */}
-                    <div className="bg-card border border-border rounded-xl p-6">
-                      <div className="flex items-center gap-2 mb-4">
+                    <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
+                      <div className="flex items-center gap-2 mb-3 sm:mb-4">
                         <Icon name="CubeIcon" size={20} className="text-purple-500" />
-                        <h3 className="text-lg font-semibold text-text-primary">Inventory Insights</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-text-primary">Inventory Insights</h3>
                       </div>
-                      <div className="space-y-3 mb-4">
+                      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
                         <div className="flex justify-between items-center">
                           <span className="text-muted-foreground">Total Products</span>
                           <span className="font-medium text-text-primary">{aiInsights.inventory_insights?.total_products || 0}</span>
