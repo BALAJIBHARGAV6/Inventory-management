@@ -122,15 +122,15 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="pt-24 md:pt-28 pb-12 px-4 md:px-6 lg:px-8">
+      <main className="pt-20 md:pt-28 pb-12 px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto animate-fade-in">
-          <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-6">My Account</h1>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-text-primary mb-4 sm:mb-6">My Account</h1>
 
           {/* Tabs */}
-          <div className="flex gap-4 border-b border-border mb-6">
+          <div className="flex gap-2 sm:gap-4 border-b border-border mb-4 sm:mb-6">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`pb-3 px-2 font-medium transition-colors ${
+              className={`pb-2 sm:pb-3 px-2 sm:px-3 font-medium transition-colors text-sm sm:text-base ${
                 activeTab === 'profile'
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-muted-foreground hover:text-text-primary'
@@ -140,7 +140,7 @@ export default function ProfilePage() {
             </button>
             <button
               onClick={() => setActiveTab('orders')}
-              className={`pb-3 px-2 font-medium transition-colors ${
+              className={`pb-2 sm:pb-3 px-2 sm:px-3 font-medium transition-colors text-sm sm:text-base ${
                 activeTab === 'orders'
                   ? 'text-primary border-b-2 border-primary'
                   : 'text-muted-foreground hover:text-text-primary'
@@ -151,22 +151,22 @@ export default function ProfilePage() {
           </div>
 
           {activeTab === 'profile' && (
-            <div className="bg-card border border-border rounded-xl p-6">
+            <div className="bg-card border border-border rounded-xl p-4 sm:p-6">
               {/* Profile Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 sm:mb-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-xl sm:text-2xl font-bold shadow-lg flex-shrink-0">
                     {formData.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
                   </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-text-primary">{formData.full_name || 'User'}</h2>
-                    <p className="text-muted-foreground text-sm">{user?.email}</p>
+                  <div className="min-w-0">
+                    <h2 className="text-base sm:text-lg font-semibold text-text-primary truncate">{formData.full_name || 'User'}</h2>
+                    <p className="text-muted-foreground text-xs sm:text-sm truncate">{user?.email}</p>
                   </div>
                 </div>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="h-10 px-4 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
+                    className="h-9 sm:h-10 px-3 sm:px-4 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base w-full sm:w-auto"
                   >
                     <Icon name="PencilIcon" size={16} />
                     Edit Profile
@@ -251,11 +251,11 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 pt-2">
                     <button
                       type="submit"
                       disabled={saving}
-                      className="h-11 px-6 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                      className="h-10 sm:h-11 px-4 sm:px-6 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
                       {saving ? <Icon name="ArrowPathIcon" size={18} className="animate-spin" /> : <Icon name="CheckIcon" size={18} />}
                       {saving ? 'Saving...' : 'Save Changes'}
@@ -271,7 +271,7 @@ export default function ProfilePage() {
                           address: profile?.address || '',
                         });
                       }}
-                      className="h-11 px-6 bg-muted text-text-primary rounded-lg font-medium hover:bg-muted/80 transition-colors flex items-center gap-2"
+                      className="h-10 sm:h-11 px-4 sm:px-6 bg-muted text-text-primary rounded-lg font-medium hover:bg-muted/80 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
                       <Icon name="XMarkIcon" size={18} />
                       Cancel
@@ -298,11 +298,11 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 orders.map((order) => (
-                  <div key={order.id || order.order_number} className="bg-card border border-border rounded-xl p-5">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <p className="font-bold text-text-primary text-lg">Order #{order.order_number}</p>
-                        <p className="text-sm text-muted-foreground">
+                  <div key={order.id || order.order_number} className="bg-card border border-border rounded-xl p-3 sm:p-5">
+                    <div className="flex justify-between items-start gap-2 mb-3 sm:mb-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-bold text-text-primary text-sm sm:text-lg truncate">Order #{order.order_number}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                           {new Date(order.created_at).toLocaleDateString('en-IN', { 
                             day: 'numeric', 
                             month: 'short', 
@@ -312,7 +312,7 @@ export default function ProfilePage() {
                           })}
                         </p>
                       </div>
-                      <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+                      <span className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-semibold flex-shrink-0 ${
                         order.status === 'delivered' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
                         order.status === 'shipped' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' :
                         order.status === 'cancelled' ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' :
@@ -341,10 +341,10 @@ export default function ProfilePage() {
                       </div>
                     )}
                     
-                    <div className="flex justify-between items-center pt-3 border-t border-border">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pt-3 border-t border-border">
                       <div>
-                        <p className="text-xl font-bold text-text-primary">₹{order.total?.toLocaleString('en-IN')}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-lg sm:text-xl font-bold text-text-primary">₹{order.total?.toLocaleString('en-IN')}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">
                           {(order.items?.length || order.order_items?.length || 1)} items • Cash on Delivery
                         </p>
                       </div>

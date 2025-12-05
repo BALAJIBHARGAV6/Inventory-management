@@ -28,23 +28,23 @@ export default function ProductDetailsInteractive({ product }) {
   return (
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartCount} />
-      <main className="pt-20 md:pt-24">
+      <main className="pt-16 md:pt-24">
         {/* Breadcrumb Section */}
-        <div className="bg-muted/30 py-3 border-b border-border">
-          <div className="container mx-auto px-4 md:px-6 lg:px-8">
+        <div className="bg-muted/30 py-2 sm:py-3 border-b border-border">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
             <Breadcrumb items={breadcrumbItems} />
           </div>
         </div>
 
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8 lg:py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-8 lg:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
             {/* Image Gallery */}
             <div className="lg:sticky lg:top-24 lg:self-start">
               <ImageGallery images={product?.images} />
             </div>
 
             {/* Product Info */}
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-6 lg:space-y-8">
               <ProductInfo product={product} />
               <AddToCartSection product={product} onAddToCart={handleAddToCart} />
               
@@ -71,10 +71,10 @@ export default function ProductDetailsInteractive({ product }) {
           </div>
 
           {/* Additional Product Details Section */}
-          <div className="mt-16 pt-12 border-t border-border">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="mt-8 sm:mt-12 lg:mt-16 pt-6 sm:pt-8 lg:pt-12 border-t border-border">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
               {/* Specifications */}
-              <div className="bg-card border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
                   <Icon name="ClipboardDocumentListIcon" size={20} className="text-accent" />
                   Specifications
@@ -104,7 +104,7 @@ export default function ProductDetailsInteractive({ product }) {
               </div>
 
               {/* Delivery Info */}
-              <div className="bg-card border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
                   <Icon name="TruckIcon" size={20} className="text-accent" />
                   Delivery Info
@@ -141,7 +141,7 @@ export default function ProductDetailsInteractive({ product }) {
               </div>
 
               {/* Customer Support */}
-              <div className="bg-card border border-border rounded-2xl p-6">
+              <div className="bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
                   <Icon name="ChatBubbleLeftRightIcon" size={20} className="text-accent" />
                   Need Help?

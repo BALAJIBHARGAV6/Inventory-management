@@ -25,24 +25,24 @@ export default function AddToCartSection({ product, onAddToCart }) {
   };
 
   return (
-    <div className="space-y-4 p-6 bg-card rounded-lg">
-      <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-text-primary">Quantity:</span>
+    <div className="space-y-3 sm:space-y-4 p-4 sm:p-6 bg-card rounded-xl">
+      <div className="flex items-center gap-3 sm:gap-4">
+        <span className="text-xs sm:text-sm font-medium text-text-primary">Quantity:</span>
         <div className="flex items-center border border-border rounded-lg overflow-hidden">
           <button
             onClick={() => handleQuantityChange(-1)}
             disabled={quantity <= 1}
-            className="w-10 h-10 flex items-center justify-center text-text-primary hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-micro"
+            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-text-primary hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-micro"
           >
             <Icon name="MinusIcon" size={16} />
           </button>
-          <span className="w-12 h-10 flex items-center justify-center text-sm font-medium text-text-primary border-x border-border">
+          <span className="w-10 h-9 sm:w-12 sm:h-10 flex items-center justify-center text-sm font-medium text-text-primary border-x border-border">
             {quantity}
           </span>
           <button
             onClick={() => handleQuantityChange(1)}
             disabled={quantity >= 10}
-            className="w-10 h-10 flex items-center justify-center text-text-primary hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-micro"
+            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-text-primary hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-micro"
           >
             <Icon name="PlusIcon" size={16} />
           </button>
@@ -52,7 +52,7 @@ export default function AddToCartSection({ product, onAddToCart }) {
       <button
         onClick={handleAddToCart}
         disabled={!product?.inStock || isAdding}
-        className="w-full py-3 text-base font-semibold text-primary-foreground bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-micro flex items-center justify-center gap-2"
+        className="w-full py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-primary-foreground bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-micro flex items-center justify-center gap-2"
       >
         {isAdding ? (
           <>
@@ -67,22 +67,22 @@ export default function AddToCartSection({ product, onAddToCart }) {
         )}
       </button>
 
-      <button className="w-full py-3 text-base font-semibold text-primary border border-primary rounded-lg hover:bg-primary hover:text-primary-foreground transition-micro flex items-center justify-center gap-2">
+      <button className="w-full py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-primary border border-primary rounded-lg hover:bg-primary hover:text-primary-foreground transition-micro flex items-center justify-center gap-2">
         <Icon name="HeartIcon" size={20} />
         Add to Wishlist
       </button>
 
-      <div className="pt-4 space-y-3">
-        <div className="flex items-center gap-3 text-sm text-text-secondary">
-          <Icon name="TruckIcon" size={18} className="text-accent" />
+      <div className="pt-3 sm:pt-4 space-y-2 sm:space-y-3">
+        <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-text-secondary">
+          <Icon name="TruckIcon" size={16} className="text-accent flex-shrink-0" />
           <span>Free delivery on orders above ₹499</span>
         </div>
-        <div className="flex items-center gap-3 text-sm text-text-secondary">
-          <Icon name="ArrowPathIcon" size={18} className="text-accent" />
+        <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-text-secondary">
+          <Icon name="ArrowPathIcon" size={16} className="text-accent flex-shrink-0" />
           <span>7 days easy return policy</span>
         </div>
-        <div className="flex items-center gap-3 text-sm text-text-secondary">
-          <Icon name="ShieldCheckIcon" size={18} className="text-accent" />
+        <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-text-secondary">
+          <Icon name="ShieldCheckIcon" size={16} className="text-accent flex-shrink-0" />
           <span>100% secure payment</span>
         </div>
       </div>

@@ -76,16 +76,16 @@ export default function AboutPage() {
       <Header />
       <main className="pt-16">
         {/* Hero Section with Animated Background */}
-        <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-[70vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden px-4">
           {/* Animated Background Elements */}
           <div className="absolute inset-0">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl animate-pulse-slow" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-3xl" />
+            <div className="absolute top-20 left-5 md:left-10 w-40 md:w-72 h-40 md:h-72 bg-accent/20 rounded-full blur-3xl animate-pulse-slow" />
+            <div className="absolute bottom-20 right-5 md:right-10 w-48 md:w-96 h-48 md:h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-accent/5 rounded-full blur-3xl" />
           </div>
           
-          {/* Floating Geometric Shapes */}
-          <div ref={heroRef} className="absolute inset-0 pointer-events-none transition-transform duration-300 ease-out">
+          {/* Floating Geometric Shapes - Hidden on mobile */}
+          <div ref={heroRef} className="absolute inset-0 pointer-events-none transition-transform duration-300 ease-out hidden md:block">
             <div className="absolute top-1/4 left-1/4 w-20 h-20 border border-accent/30 rounded-lg rotate-45 animate-float" />
             <div className="absolute top-1/3 right-1/4 w-16 h-16 border border-primary/20 rounded-full animate-float" style={{ animationDelay: '1s' }} />
             <div className="absolute bottom-1/4 left-1/3 w-12 h-12 bg-accent/10 rounded-lg animate-float" style={{ animationDelay: '2s' }} />
@@ -98,25 +98,25 @@ export default function AboutPage() {
                 <span className="text-sm font-medium text-text-secondary">B.Tech Final Year Project 2025-26</span>
               </div>
               
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-8 animate-slide-up">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 md:mb-8 animate-slide-up">
                 InventoryPredictor
-                <span className="block mt-2 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
+                <span className="block mt-2 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent text-2xl sm:text-3xl md:text-5xl lg:text-6xl">
                   Final Year Project
                 </span>
               </h1>
               
-              <p className="text-xl md:text-2xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-12 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <p className="text-base sm:text-lg md:text-2xl text-text-secondary leading-relaxed max-w-2xl mx-auto mb-8 md:mb-12 animate-slide-up px-2" style={{ animationDelay: '0.2s' }}>
                 An AI-powered inventory management system with demand forecasting and e-commerce capabilities.
               </p>
 
-              <div className="flex flex-wrap justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                <a href="/product-listing" className="px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:scale-105 transition-smooth flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                <a href="/product-listing" className="px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:scale-105 transition-smooth flex items-center justify-center gap-2 text-sm sm:text-base">
                   Explore Products
-                  <Icon name="ArrowRightIcon" size={20} />
+                  <Icon name="ArrowRightIcon" size={18} />
                 </a>
-                <a href="#story" className="px-8 py-4 glass-card rounded-xl font-semibold hover:scale-105 transition-smooth flex items-center gap-2">
+                <a href="#story" className="px-6 sm:px-8 py-3 sm:py-4 glass-card rounded-xl font-semibold hover:scale-105 transition-smooth flex items-center justify-center gap-2 text-sm sm:text-base">
                   Our Story
-                  <Icon name="PlayIcon" size={20} />
+                  <Icon name="PlayIcon" size={18} />
                 </a>
               </div>
             </div>
@@ -310,27 +310,27 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/80" />
+        <section className="py-12 md:py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-accent/10 to-primary/20" />
           <div className="absolute inset-0">
             <div className="absolute top-10 left-10 w-72 h-72 bg-accent/20 rounded-full blur-3xl" />
             <div className="absolute bottom-10 right-10 w-96 h-96 bg-background/10 rounded-full blur-3xl" />
           </div>
           <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 text-center">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-text-primary mb-4 md:mb-6">
               Explore the
-              <span className="block">InventoryPredictor</span>
+              <span className="block text-accent">InventoryPredictor</span>
             </h2>
-            <p className="text-xl text-white mb-10 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-neutral-900 dark:text-white mb-8 md:mb-10 max-w-2xl mx-auto px-4">
               Experience the full features of this inventory management system with AI-powered forecasting.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="/product-listing"
-                className="px-10 py-5 bg-background text-foreground rounded-xl font-bold text-lg hover:scale-105 transition-smooth flex items-center gap-3 shadow-xl"
+                className="px-6 sm:px-10 py-3 sm:py-5 bg-primary text-primary-foreground rounded-xl font-bold text-base sm:text-lg hover:scale-105 transition-smooth flex items-center gap-2 sm:gap-3 shadow-xl"
               >
                 View Products
-                <Icon name="ArrowRightIcon" size={24} />
+                <Icon name="ArrowRightIcon" size={20} />
               </a>
             </div>
           </div>
