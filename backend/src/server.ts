@@ -38,20 +38,36 @@ async function registerPlugins() {
 
   await server.register(cors, {
     origin: (origin, callback) => {
-      const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',');
+      const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000').split(',').map(o => o.trim());
+      
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       
+      // Check exact match
       if (allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        console.log('CORS blocked origin:', origin);
-        console.log('Allowed origins:', allowedOrigins);
-        callback(new Error('Not allowed by CORS'), false);
+        return callback(null, true);
       }
+      
+      // Check wildcard patterns (e.g., *.vercel.app)
+      const isAllowed = allowedOrigins.some(allowedOrigin => {
+        if (allowedOrigin.startsWith('*.')) {
+          const domain = allowedOrigin.slice(2);
+          return origin.endsWith(domain);
+        }
+        return false;
+      });
+      
+      if (isAllowed) {
+        return callback(null, true);
+      }
+      
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
+      callback(new Error('Not allowed by CORS'), false);
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   await server.register(rateLimit, {

@@ -47,7 +47,7 @@
 | Platform | URL |
 |----------|-----|
 | **Frontend** | [https://inventory-management-ecommerce.vercel.app](https://inventory-management-ecommerce.vercel.app) |
-| **Backend API** | [https://inventory-management-production-4d6b.up.railway.app](https://inventory-management-production-4d6b.up.railway.app) |
+| **Backend API** | Deploy to Render - See [DEPLOYMENT.md](./DEPLOYMENT.md) |
 
 ### Demo Pages
 | Page | Description |
@@ -779,7 +779,7 @@ This project is developed as a **B.Tech Final Year Project** for academic purpos
 - [Groq](https://groq.com/) - AI Inference Platform
 - [TailwindCSS](https://tailwindcss.com/) - CSS Framework
 - [Vercel](https://vercel.com/) - Frontend Hosting
-- [Railway](https://railway.app/) - Backend Hosting
+- [Render](https://render.com/) - Backend Hosting
 
 ---
 
