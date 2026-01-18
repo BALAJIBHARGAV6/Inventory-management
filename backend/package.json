@@ -1,6 +1,6 @@
 {
   "name": "inventory-predictor-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI-powered inventory management backend with forecasting",
   "main": "dist/server.js",
   "scripts": {

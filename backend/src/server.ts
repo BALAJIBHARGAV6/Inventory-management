@@ -128,6 +128,9 @@ async function start() {
 
     await server.listen({ port, host });
     console.log(`🚀 Server running at http://${host}:${port}`);
+    console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✅ Health check available at: http://${host}:${port}/health`);
+    console.log(`🔗 API endpoints ready`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);
